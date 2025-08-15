@@ -49,7 +49,7 @@ jobs:
       - name: Generate/update docs
         run: |
           pnpm doc
-          echo "$(git rev-parse HEAD)" > .turborepo-template.lst
+          echo "$(git rev-parse HEAD)" > .turborepo-template-upgrade.lst
       - name: Save docs back to repo
         run: git add . && git commit -m "upgrade deps && docs [skip ci]" && git push origin main
       - name: Update website
@@ -59,7 +59,7 @@ jobs:
           --method POST \
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/mayank1513/turborepo-template/merge-upstream \
+          /repos/mayank1513/turborepo-template-upgrade/merge-upstream \
           -f "branch=main"
         env:
           GH_TOKEN: ${{ secrets.mayank1513PAT }}

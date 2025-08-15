@@ -1,6 +1,6 @@
 {
+  "packageName": "turborepo-template-upgrade",
   "owner": "react18-tools",
-  "repo": "turborepo-template",
-  "packageName": "react18-loaders",
-  "title": "React 18 Loaders"
+  "repo": "turborepo-template-upgrade",
+  "title": "Turborepo Template Upgrade"
 }
