@@ -120,6 +120,4 @@ try {
 } catch {
   console.error("Failed to publish canonical packages");
 }
-
-execSync("node ./scripts/lite.js");
-execSync(publishCmd + reTag.replace("@", "-lite@"));
+

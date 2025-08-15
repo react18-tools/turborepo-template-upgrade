@@ -5,14 +5,12 @@
     "build": "turbo build",
     "clean": "turbo clean",
     "dev": "turbo dev",
-    "doc": "node scripts/doc.js && typedoc && cp _config.yml docs && node scripts/add-frontmatter.mjs",
     "format": "prettier --write \"**/*.{js,jsx,json,ts,tsx,md,css,scss}\"",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
-    "preinstall": "node scripts/update-pm.js",
-    "rebrand": "node scripts/rebrand.js"
+    "preinstall": "node scripts/update-pm.js"
   },
   "pre-commit": [
     "lint:fix",
@@ -22,14 +20,8 @@
     "@changesets/cli": "^2.29.5",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^24.2.1",
-    "enquirer": "^2.4.1",
-    "plop": "^4.0.1",
     "prettier": "^3.6.2",
-    "turbo": "^2.5.5",
-    "typedoc": "^0.28.10",
-    "typedoc-plugin-mdn-links": "^5.0.8",
-    "typedoc-plugin-missing-exports": "^4.1.0",
-    "typedoc-plugin-rename-defaults": "^0.7.3"
+    "turbo": "^2.5.5"
   },
   "packageManager": "pnpm@9.15.5",
   "engines": {
