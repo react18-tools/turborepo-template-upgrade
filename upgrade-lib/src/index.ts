@@ -69,7 +69,8 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     const sparseCommand = `git sparse-checkout set /* '!${exclusions.join("/*' '!")}/*'`;
     console.log(sparseCommand);
     execSync(sparseCommand, { stdio: "inherit" });
-    execSync("git checkout template/main -- .", { stdio: "inherit" });
+    execSync("git read-tree -mu template/main", { stdio: "inherit" });
+    // execSync("git checkout template/main -- .", { stdio: "inherit" });
     execSync("git sparse-checkout disable", { stdio: "inherit" });
     // execSync(`git reset HEAD ${exclusions.join(" ")}`);
 
