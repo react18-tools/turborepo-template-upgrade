@@ -20,16 +20,13 @@
     "@changesets/cli": "^2.29.6",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^24.2.1",
+    "pre-commit": "^1.2.2",
     "prettier": "^3.6.2",
     "turbo": "^2.5.5"
   },
   "packageManager": "pnpm@9.15.5",
   "engines": {
     "node": ">=18"
-  },
-  "dependencies": {
-    "pre-commit": "^1.2.2",
-    "typedoc-plugin-markdown": "^4.8.1"
   },
   "pnpm": {
     "overrides": {
