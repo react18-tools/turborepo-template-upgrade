@@ -33,7 +33,7 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git diff --cached --quiet");
   } catch {
     console.error("❌ Error: Please commit or stash your changes before upgrading.");
-    process.exit(1);
+    return;
   }
 
   // 3. Ensure template remote exists
@@ -102,7 +102,7 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
 
     resolvePackageJSONConflicts();
 
-    execSync("git add .");
+    execSync("git add ./package.json");
 
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
   } catch (err) {
