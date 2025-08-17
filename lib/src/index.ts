@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 
 export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
@@ -33,10 +33,11 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     }
     console.log({ lastTemplateRepoCommit });
     execSync("git fetch template", { encoding: "utf8", stdio: "inherit" });
-    execSync(
-      `git diff ${lastTemplateRepoCommit} template/main -- . ':!docs' ':!lib' > .template.patch`,
-      { encoding: "utf8", stdio: "inherit" },
+    const patch = execSync(
+      `git diff ${lastTemplateRepoCommit} template/main -- . ':!docs' ':!lib'`,
+      { encoding: "utf8" },
     );
+    writeFileSync(".template.patch", patch);
     console.log("diff done!");
   } catch (err) {
     console.error(err);
