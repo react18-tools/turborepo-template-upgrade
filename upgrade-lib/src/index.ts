@@ -31,8 +31,8 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git diff --quiet");
     execSync("git diff --cached --quiet");
   } catch {
-    // console.error("❌ Error: Please commit or stash your changes before upgrading.");
-    // process.exit(1);
+    console.error("❌ Error: Please commit or stash your changes before upgrading.");
+    process.exit(1);
   }
 
   // 3. Ensure template remote exists
@@ -65,8 +65,12 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
       if (!existsSync(resolve(cwd, dir))) exclusions.push(`${dir}`);
     });
 
-    execSync(`git sparse-checkout set --no-cone '/*' '!${exclusions.join("/*' '!")}/*'`);
-    execSync("git checkout template/main -- .");
+    execSync("git sparse-checkout init --no-cone");
+    const sparseCommand = `git sparse-checkout set /* '!${exclusions.join("/*' '!")}/*'`;
+    console.log(sparseCommand);
+    execSync(sparseCommand, { stdio: "inherit" });
+    execSync("git checkout template/main", { stdio: "inherit" });
+    execSync("git sparse-checkout disable", { stdio: "inherit" });
     // execSync(`git reset HEAD ${exclusions.join(" ")}`);
 
     // 7. Generate patch
