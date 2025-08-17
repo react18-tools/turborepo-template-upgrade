@@ -1,129 +1,101 @@
-# Turborepo Template Upgrade <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 40px"/>
+# turborepo-template-upgrade <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 40px"/>
 
-[![test](https://github.com/react18-tools/turborepo-template-upgrade/actions/workflows/test.yml/badge.svg)](https://github.com/react18-tools/turborepo-template-upgrade/actions/workflows/test.yml) [![Maintainability](https://api.codeclimate.com/v1/badges/aa896ec14c570f3bb274/maintainability)](https://codeclimate.com/github/react18-tools/turborepo-template-upgrade/maintainability) [![codecov](https://codecov.io/gh/react18-tools/turborepo-template-upgrade/graph/badge.svg)](https://codecov.io/gh/react18-tools/turborepo-template-upgrade) [![Version](https://img.shields.io/npm/v/turborepo-template-upgrade-upgrade.svg?colorB=green)](https://www.npmjs.com/package/turborepo-template-upgrade-upgrade) [![Downloads](https://img.jsdelivr.com/img.shields.io/npm/d18m/turborepo-template-upgrade-upgrade.svg)](https://www.npmjs.com/package/turborepo-template-upgrade-upgrade) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/turborepo-template-upgrade-upgrade) [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/from-referrer/)
+[![test](https://github.com/react18-tools/turborepo-template-upgrade/actions/workflows/test.yml/badge.svg)](https://github.com/react18-tools/turborepo-template-upgrade/actions/workflows/test.yml)
+[![Maintainability](https://qlty.sh/badges/d71561ba-73d4-4182-a419-98ccb23e4a0a/maintainability.svg)](https://qlty.sh/gh/react18-tools/projects/turborepo-template-upgrade)
+[![codecov](https://codecov.io/gh/react18-tools/turborepo-template-upgrade/graph/badge.svg)](https://codecov.io/gh/react18-tools/turborepo-template-upgrade) [![Version](https://img.shields.io/npm/v/turborepo-template-upgrade-upgrade.svg?colorB=green)](https://www.npmjs.com/package/turborepo-template-upgrade-upgrade) [![Downloads](https://img.jsdelivr.com/img.shields.io/npm/d18m/turborepo-template-upgrade-upgrade.svg)](https://www.npmjs.com/package/turborepo-template-upgrade-upgrade) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/turborepo-template-upgrade-upgrade) [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/from-referrer/)
 
-Turborepo Template Upgrade is a comprehensive library designed to unlock the full potential of React 18 server components. It provides customizable loading animation components and a fullscreen loader container, seamlessly integrating with React and Next.js.
+**Seamlessly keep your repo in sync with [turborepo-template](https://github.com/react18-tools/turborepo-template).**
 
-✅ Fully Treeshakable (import from `turborepo-template-upgrade-upgrade/client/loader-container`)
+---
 
-✅ Fully TypeScript Supported
+## 🚀 Purpose
 
-✅ Leverages the power of React 18 Server components
+`turborepo-template-upgrade` is a small utility built for repositories that were bootstrapped using [react18-tools/turborepo-template](https://github.com/react18-tools/turborepo-template).
 
-✅ Compatible with all React 18 build systems/tools/frameworks
+Instead of manually copy-pasting template updates (bug fixes, CI improvements, tooling upgrades), this package provides:
 
-✅ Documented with [Typedoc](https://react18-tools.github.io/turborepo-template-upgrade) ([Docs](https://react18-tools.github.io/turborepo-template-upgrade))
+- **One command upgrade** – pull changes from the template into your repo.
+- **Safe patching** – applies diffs instead of overwriting.
+- **Smart conflict resolution** – especially for root `package.json` file.
 
-✅ Examples for Next.js, and Vite
+---
 
-> <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 20px"/> Star [this repository](https://github.com/react18-tools/turborepo-template-upgrade) and share it with your friends.
+## 📦 Installation
 
-## Getting Started
-
-### Installation
-
-```bash
-pnpm add turborepo-template-upgrade-upgrade
-```
-
-**_or_**
+You don’t need to add this as a runtime dependency. Use it as a dev tool:
 
 ```bash
-npm install turborepo-template-upgrade-upgrade
+npm install -D turborepo-template-upgrade
+# or
+yarn add -D turborepo-template-upgrade
 ```
 
-**_or_**
+---
+
+## ⚡ Usage
+
+Inside a repo created with [turborepo-template](https://github.com/react18-tools/turborepo-template):
 
 ```bash
-yarn add turborepo-template-upgrade-upgrade
+npx turborepo-template-upgrade
 ```
 
-## Want Lite Version? [![npm bundle size](https://img.shields.io/bundlephobia/minzip/turborepo-template-upgrade-upgrade-lite)](https://www.npmjs.com/package/turborepo-template-upgrade-upgrade-lite) [![Version](https://img.shields.io/npm/v/turborepo-template-upgrade-upgrade-lite.svg?colorB=green)](https://www.npmjs.com/package/turborepo-template-upgrade-upgrade-lite) [![Downloads](https://img.jsdelivr.com/img.shields.io/npm/d18m/turborepo-template-upgrade-upgrade-lite.svg)](https://www.npmjs.com/package/turborepo-template-upgrade-upgrade-lite)
+This will:
+
+1. Fetch the latest changes from the template repo.
+2. Compute a `git diff` since your last upgrade.
+3. Apply the patch on top of your repo.
+4. Attempt to auto-resolve `package.json` conflicts.
+5. Store the last applied commit in `.turborepo-template.lst`.
+
+If there are remaining conflicts, you’ll see them in `.template.patch`.
+
+---
+
+## 🧩 Conflict Resolution
+
+- **`package.json`** merges are handled automatically:
+  - Keeps your dependencies.
+  - Brings in template upgrades.
+  - Deduplicates versions.
+
+- For other files, standard `git apply --3way` conflict markers may appear.
+
+---
+
+## 🔍 Example Workflow
 
 ```bash
-pnpm add turborepo-template-upgrade-upgrade-lite
+# 1. Upgrade
+npx turborepo-template-upgrade
+
+# 2. Review conflicts (if any)
+git status
+cat .template.patch
+
+# 3. Commit changes
+git add .
+git commit -m "chore: upgrade template"
 ```
 
-**or**
+---
 
-```bash
-npm install turborepo-template-upgrade-upgrade-lite
-```
+## 🛠 How It Works
 
-**or**
+- Template repo is added as a Git remote (`template`).
+- Last applied commit hash is tracked in `.turborepo-template.lst`.
+- `git diff` between last applied commit → `template/main`.
+- Patch applied locally with `git apply --3way`.
 
-```bash
-yarn add turborepo-template-upgrade-upgrade-lite
-```
+---
 
-> You need `r18gs` as a peer-dependency
+## 🙏 Acknowledgments
 
-### Import Styles
-
-You can import styles globally or within specific components.
-
-```css
-/* globals.css */
-@import "turborepo-template-upgrade-upgrade/dist";
-```
-
-```tsx
-// layout.tsx
-import "turborepo-template-upgrade-upgrade/dist/index.css";
-```
-
-For selective imports:
-
-```css
-/* globals.css */
-@import "turborepo-template-upgrade-upgrade/dist/client"; /** required if you are using LoaderContainer */
-@import "turborepo-template-upgrade-upgrade/dist/server/bars/bars1";
-```
-
-### Usage
-
-Using loaders is straightforward.
-
-```tsx
-import { Bars1 } from "turborepo-template-upgrade-upgrade/dist/server/bars/bars1";
-
-export default function MyComponent() {
-  return someCondition ? <Bars1 /> : <>Something else...</>;
-}
-```
-
-For detailed API and options, refer to [the API documentation](https://react18-tools.github.io/turborepo-template-upgrade).
-
-**Using LoaderContainer**
-
-`LoaderContainer` is a fullscreen component. You can add this component directly in your layout and then use `useLoader` hook to toggle its visibility.
-
-```tsx
-// layout.tsx
-<LoaderContainer />
-	 ...
-```
-
-```tsx
-// some other page or component
-import { useLoader } from "turborepo-template-upgrade-upgrade/dist/hooks";
-
-export default MyComponent() {
-	const { setLoading } = useLoader();
-	useCallback(()=>{
-		setLoading(true);
-		...do some work
-		setLoading(false);
-	}, [])
-	...
-}
-```
+Thanks to the [react18-tools](https://github.com/react18-tools) community for shaping the turborepo ecosystem.
 
 ## License
 
 This library is licensed under the MPL-2.0 open-source license.
-
-
 
 > <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 20px"/> Please enroll in [our courses](https://mayank-chaudhari.vercel.app/courses) or [sponsor](https://github.com/sponsors/mayank1513) our work.
 
