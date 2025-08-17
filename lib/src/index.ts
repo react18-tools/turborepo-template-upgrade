@@ -16,8 +16,8 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git remote add template https://github.com/react18-tools/turborepo-template", {
       encoding: "utf8",
     });
-  } catch (err) {
-    console.debug("Error setting template", err);
+  } catch {
+    // ignore
   }
 
   try {
