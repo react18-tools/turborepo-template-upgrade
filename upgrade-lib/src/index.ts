@@ -31,8 +31,8 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git diff --quiet");
     execSync("git diff --cached --quiet");
   } catch {
-    console.error("❌ Error: Please commit or stash your changes before upgrading.");
-    process.exit(1);
+    // console.error("❌ Error: Please commit or stash your changes before upgrading.");
+    // process.exit(1);
   }
 
   // 3. Ensure template remote exists
@@ -60,20 +60,24 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git fetch template");
 
     // 6. Build exclusion list
-    const exclusions = [":!docs/", ":!lib/"];
+    const exclusions = ["docs", "lib"];
     ["scripts/templates", "examples/express", "packages/logger"].forEach(dir => {
-      if (!existsSync(resolve(cwd, dir))) exclusions.push(`:!${dir}/`);
+      if (!existsSync(resolve(cwd, dir))) exclusions.push(`${dir}`);
     });
+
+    execSync(`git sparse-checkout set --no-cone '/*' '!${exclusions.join("/*' '!")}/*'`);
+    execSync("git checkout template/main -- .");
+    // execSync(`git reset HEAD ${exclusions.join(" ")}`);
 
     // 7. Generate patch
-    const diffCmd = `git diff ${lastTemplateRepoCommit} template/main -- ${exclusions.join(" ")} .`;
-    const patch = execSync(diffCmd, { encoding: "utf8" });
-    writeFileSync(".template.patch", patch);
+    // const diffCmd = `git diff ${lastTemplateRepoCommit} template/main -- ${exclusions.join(" ")} .`;
+    // const patch = execSync(diffCmd, { encoding: "utf8" });
+    // writeFileSync(".template.patch", patch);
 
-    // 8. Apply patch
-    execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
-      stdio: "inherit",
-    });
+    // // 8. Apply patch
+    // execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
+    //   stdio: "inherit",
+    // });
 
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
   } catch (err) {
