@@ -1,6 +1,7 @@
 import { execSync } from "child_process";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { resolve } from "path";
+import { resolvePackageJSONConflicts } from "./utils";
 
 /**
  * Upgrade a repo created from the turborepo template.
@@ -89,9 +90,13 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
       stdio: "inherit",
     });
 
-    const templateLatestCommit = execSync("git rev-parse template/main", { encoding: "utf8" });
+    const templateLatestCommit = execSync("git rev-parse template/main", {
+      encoding: "utf8",
+    }).trim();
 
     writeFileSync(".turborepo-template.lst", templateLatestCommit);
+
+    resolvePackageJSONConflicts();
 
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
   } catch (err) {
