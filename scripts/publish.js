@@ -29,10 +29,10 @@ try {
 
 console.log({ VERSION, LATEST_VERSION });
 
-const [newMajor, newMinor] = VERSION.split(".");
-const [oldMajor, oldMinor] = LATEST_VERSION.split(".");
+const [newMajor, newMinor, newPatch] = VERSION.split(".");
+const [oldMajor, oldMinor, oldPatch] = LATEST_VERSION.split(".");
 
-const isPatch = newMajor === oldMajor && newMinor === oldMinor;
+const isPatch = newMajor === oldMajor && newMinor === oldMinor && newPatch !== oldPatch;
 const releaseBranch = `release-${newMajor}.${newMinor}`;
 
 if (isPatch) {
@@ -73,4 +73,3 @@ try {
 } catch {
   console.error("Failed to publish canonical packages");
 }
-
