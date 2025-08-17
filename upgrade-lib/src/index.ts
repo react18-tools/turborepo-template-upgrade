@@ -91,7 +91,7 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
         stdio: "inherit",
       });
     } catch (err) {
-      console.error("Applied patch with errors: ", err);
+      console.error("Applied patch with errors: " /*, err*/);
     }
 
     const templateLatestCommit = execSync("git rev-parse template/main", {
@@ -101,6 +101,8 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     writeFileSync(".turborepo-template.lst", templateLatestCommit);
 
     resolvePackageJSONConflicts();
+
+    execSync("git add .");
 
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
   } catch (err) {
