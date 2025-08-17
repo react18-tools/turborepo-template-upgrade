@@ -86,9 +86,13 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     writeFileSync(".template.patch", patch);
 
     // 8. Apply patch
-    execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
-      stdio: "inherit",
-    });
+    try {
+      execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
+        stdio: "inherit",
+      });
+    } catch (err) {
+      console.error("Applied patch with errors: ", err);
+    }
 
     const templateLatestCommit = execSync("git rev-parse template/main", {
       encoding: "utf8",
