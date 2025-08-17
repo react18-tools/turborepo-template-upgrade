@@ -60,29 +60,20 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git fetch template");
 
     // 6. Build exclusion list
-    const exclusions = ["docs", "lib"];
+    const exclusions = [":!docs/", ":!lib/"];
     ["scripts/templates", "examples/express", "packages/logger"].forEach(dir => {
-      if (!existsSync(resolve(cwd, dir))) exclusions.push(`${dir}`);
+      if (!existsSync(resolve(cwd, dir))) exclusions.push(`:!${dir}/`);
     });
 
-    execSync("git sparse-checkout init --no-cone");
-    const sparseCommand = `git sparse-checkout set /* '!${exclusions.join("/*' '!")}/*'`;
-    console.log(sparseCommand);
-    execSync(sparseCommand, { stdio: "inherit" });
-    execSync("git read-tree -mu template/main", { stdio: "inherit" });
-    // execSync("git checkout template/main -- .", { stdio: "inherit" });
-    execSync("git sparse-checkout disable", { stdio: "inherit" });
-    // execSync(`git reset HEAD ${exclusions.join(" ")}`);
-
     // 7. Generate patch
-    // const diffCmd = `git diff ${lastTemplateRepoCommit} template/main -- ${exclusions.join(" ")} .`;
-    // const patch = execSync(diffCmd, { encoding: "utf8" });
-    // writeFileSync(".template.patch", patch);
+    const diffCmd = `git diff ${lastTemplateRepoCommit} template/main -- ${exclusions.join(" ")} .`;
+    const patch = execSync(diffCmd, { encoding: "utf8" });
+    writeFileSync(".template.patch", patch);
 
-    // // 8. Apply patch
-    // execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
-    //   stdio: "inherit",
-    // });
+    // 8. Apply patch
+    execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
+      stdio: "inherit",
+    });
 
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
   } catch (err) {
