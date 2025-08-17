@@ -4,7 +4,7 @@ import lstCommit from "../../.turborepo-template.lst?raw";
 
 describe("upgrade", () => {
   test("smoke", ({ expect }) => {
-    upgradeTemplate(lstCommit);
+    upgradeTemplate(lstCommit.trim());
     expect(true).toBe(true);
   });
 });

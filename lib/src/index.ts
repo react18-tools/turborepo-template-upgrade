@@ -49,6 +49,8 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
       if (existsSync(filePath)) {
         lastTemplateRepoCommit = readFileSync(filePath, "utf8").trim();
       }
+    } else {
+      lastTemplateRepoCommit = lastTemplateRepoCommit.trim();
     }
     if (!lastTemplateRepoCommit) {
       throw new Error("❌ Last Turborepo template commit not found.");
