@@ -4,10 +4,13 @@ import { resolve } from "path";
 
 export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
   // Check if git tree is clean
-  execSync(`git diff --quiet && git diff --cached --quiet || {
-  echo "Error: Please commit or stash your changes before upgrading."
-  exit 1
-}`);
+  try {
+    execSync("git diff --quiet");
+    execSync("git diff --cached --quiet");
+  } catch {
+    console.error("Error: Please commit or stash your changes before upgrading.");
+    process.exit(1);
+  }
   // Add template remote
   try {
     execSync("git remote add template https://github.com/react18-tools/turborepo-template");
