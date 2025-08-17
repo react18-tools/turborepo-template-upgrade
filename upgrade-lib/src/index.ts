@@ -60,9 +60,14 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git fetch template");
 
     // 6. Build exclusion list
-    const exclusions = ["docs", "lib", "scripts/rebrand.config.json", "pnpm-lock.yaml", ".lst"].map(
-      entry => `:!${entry}`,
-    );
+    const exclusions = [
+      "docs",
+      "lib",
+      "scripts/rebrand.config.json",
+      "pnpm-lock.yaml",
+      ".lst",
+      ".turborepo-template.lst",
+    ].map(entry => `:!${entry}`);
 
     [
       "scripts/templates",
@@ -83,6 +88,10 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
       stdio: "inherit",
     });
+
+    const templateLatestCommit = execSync("git rev-parse template/main", { encoding: "utf8" });
+
+    writeFileSync(".turborepo-template.lst", templateLatestCommit);
 
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
   } catch (err) {
