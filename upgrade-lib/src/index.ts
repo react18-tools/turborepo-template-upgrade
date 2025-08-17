@@ -60,7 +60,10 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git fetch template");
 
     // 6. Build exclusion list
-    const exclusions = [":!docs", ":!lib"];
+    const exclusions = ["docs", "lib", "scripts/rebrand.config.json", "pnpm-lock.yaml", ".lst"].map(
+      entry => `:!${entry}`,
+    );
+
     [
       "scripts/templates",
       "examples/express",
