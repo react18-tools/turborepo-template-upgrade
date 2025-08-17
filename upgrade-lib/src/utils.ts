@@ -35,9 +35,12 @@ export const resolvePackageJSONConflicts = () => {
     }
 
     // Build final package.json
-    const originalJson = JSON.parse(
-      fs.readFileSync(conflictFile, "utf8").replace(/<<<<<<<[\s\S]*>>>>>>> theirs/, ""),
-    );
+    const cleaned = fs
+      .readFileSync(conflictFile, "utf8")
+      .replace(/<<<<<<<[\s\S]*?=======([\s\S]*?)>>>>>>> theirs/g, (_, theirs) => theirs.trim());
+
+    const originalJson = JSON.parse(cleaned);
+
     originalJson.dependencies = {
       ...(originalJson.dependencies || {}),
       ...finalDeps,
