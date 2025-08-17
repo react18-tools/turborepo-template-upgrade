@@ -64,7 +64,7 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     });
 
     // 7. Generate patch
-    const diffCmd = `git diff ${lastTemplateRepoCommit} template/main . ${exclusions.join(" ")}`;
+    const diffCmd = `git diff ${lastTemplateRepoCommit} template/main -- ${exclusions.join(" ")} .`;
     const patch = execSync(diffCmd, { encoding: "utf8" });
     writeFileSync(".template.patch", patch);
 
