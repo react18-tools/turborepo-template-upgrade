@@ -58,9 +58,9 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     execSync("git fetch template");
 
     // 6. Build exclusion list
-    const exclusions = [":!docs", ":!lib"];
+    const exclusions = [":!docs/", ":!lib/"];
     ["scripts/templates", "examples/express", "packages/logger"].forEach(dir => {
-      if (!existsSync(resolve(cwd, dir))) exclusions.push(`:!${dir}`);
+      if (!existsSync(resolve(cwd, dir))) exclusions.push(`:!${dir}/`);
     });
 
     // 7. Generate patch
