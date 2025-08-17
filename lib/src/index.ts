@@ -64,12 +64,14 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     });
 
     // 7. Generate patch
-    const diffCmd = `git diff ${lastTemplateRepoCommit} template/main -- . ${exclusions.join(" ")}`;
+    const diffCmd = `git diff ${lastTemplateRepoCommit} template/main . ${exclusions.join(" ")}`;
     const patch = execSync(diffCmd, { encoding: "utf8" });
     writeFileSync(".template.patch", patch);
 
     // 8. Apply patch
-    execSync("git apply --3way --whitespace=fix .template.patch", { stdio: "inherit" });
+    execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
+      stdio: "inherit",
+    });
 
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
   } catch (err) {
