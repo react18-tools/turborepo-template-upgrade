@@ -49,9 +49,9 @@
     "nextjs-themes": "^4.0.6",
     "r18gs": "^3.0.1",
     "react-live": "^4.1.8",
-    "react18-loaders": "latest",
+    "react18-loaders": "^1.1.7",
     "rehype-raw": "^7.0.0",
-    "typingfx": "^1.2.0",
-    "turborepo-template-upgrade": "workspace:*"
+    "turborepo-template-upgrade": "workspace:*",
+    "typingfx": "^1.2.0"
   }
 }
