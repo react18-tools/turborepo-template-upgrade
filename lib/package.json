@@ -2,7 +2,7 @@
   "name": "turborepo-template-upgrade",
   "author": "Mayank Kumar Chaudhari (https://mayank-chaudhari.vercel.app)",
   "private": false,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Upgrade projects based on a Turborepo template using selective git diffs, with support for ignore paths and skipped packages.",
   "license": "MPL-2.0",
   "main": "./dist/index.js",

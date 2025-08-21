@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.0.3
+
+### Patch Changes
+
+- de35504: fix: Improve error handling in patch application and default last template commit assignment
+
 ## 0.0.2
 
 ### Patch Changes
