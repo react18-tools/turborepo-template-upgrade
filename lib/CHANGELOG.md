@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.0.4
+
+### Patch Changes
+
+- 4f4e37f: fix: Improve error logging and handle default last template commit assignment
+
 ## 0.0.3
 
 ### Patch Changes
