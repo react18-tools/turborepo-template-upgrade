@@ -18,10 +18,12 @@ const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[
 
   // 8. Apply patch
   try {
-    execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch");
+    execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
+      encoding: "utf8",
+    });
   } catch (err: any) {
     const errorLines: string[] = err.stderr
-      .split("\n")
+      ?.split?.("\n")
       .filter((line: string) => line.startsWith("error"));
     errorLines.forEach((line: string) => {
       exclusions.push(line.split(":")[1].trim());
