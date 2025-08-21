@@ -26,7 +26,7 @@ const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[
       ?.split?.("\n")
       .filter((line: string) => line.startsWith("error"));
     errorLines.forEach((line: string) => {
-      exclusions.push(line.split(":")[1].trim());
+      exclusions.push(`:!${line.split(":")[1].trim()}`);
     });
     errorLogs.push("Applied patch with errors: ");
     errorLogs.push({ errorLines, exclusions });
