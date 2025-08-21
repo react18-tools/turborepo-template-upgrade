@@ -30,7 +30,7 @@ const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[
       }
     });
     errorLogs.push("Applied patch with errors: ");
-    errorLogs.push({ err: err.stderr, exclusions });
+    errorLogs.push({ err: err.stderr.split("\n"), exclusions, patchLogs });
     errorLogs.push("^^^---Applied patch with errors");
     createAndApplyPatch(lastTemplateRepoCommit, exclusions);
   }
@@ -87,7 +87,10 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
       lastTemplateRepoCommit = lastTemplateRepoCommit.trim();
     }
 
-    lastTemplateRepoCommit ||= DEFAULT_LAST_TURBO_COMMIT;
+    if (!lastTemplateRepoCommit?.trim()) {
+      lastTemplateRepoCommit = DEFAULT_LAST_TURBO_COMMIT;
+      console.log("using default base commit: ", lastTemplateRepoCommit);
+    }
 
     // 5. Fetch latest template
     execSync("git fetch template");
@@ -131,5 +134,5 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
   } catch (err) {
     console.error("❌ Upgrade failed:", err);
   }
-  writeFileSync(".error.log.json", JSON.stringify(errorLogs, null, 2));
+  writeFileSync(".error.log", JSON.stringify(errorLogs, null, 2));
 };
