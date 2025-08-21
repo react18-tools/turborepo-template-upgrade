@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.0.6
+
+### Patch Changes
+
+- 5f04a67: fix: Improve error handling in patch application by refining error logging and exclusion updates
+
 ## 0.0.5
 
 ### Patch Changes
