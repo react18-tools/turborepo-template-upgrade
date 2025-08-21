@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.0.8
+
+### Patch Changes
+
+- a1dc86b: :! <- fix exclusion syntax
+
 ## 0.0.7
 
 ### Patch Changes
