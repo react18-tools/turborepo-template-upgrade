@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.0.7
+
+### Patch Changes
+
+- b313804: fix: Enhance error handling in patch application by adding encoding option to execSync
+
 ## 0.0.6
 
 ### Patch Changes
