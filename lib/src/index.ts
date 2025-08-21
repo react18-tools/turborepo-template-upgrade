@@ -17,22 +17,19 @@ const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[
   writeFileSync(".template.patch", patch);
 
   // 8. Apply patch
-  let patchLogs = "";
   try {
-    patchLogs = execSync(
-      "git apply --3way --ignore-space-change --ignore-whitespace .template.patch",
-      { encoding: "utf8" },
-    );
+    execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch");
   } catch (err: any) {
-    patchLogs.split("\n").forEach(line => {
-      if (line.startsWith("error")) {
-        exclusions.push(line.split(":")[1].trim());
-      }
+    const errorLines: string[] = err.stderr
+      .split("\n")
+      .filter((line: string) => line.startsWith("error"));
+    errorLines.forEach((line: string) => {
+      exclusions.push(line.split(":")[1].trim());
     });
     errorLogs.push("Applied patch with errors: ");
-    errorLogs.push({ err: err.stderr.split("\n"), exclusions, patchLogs });
+    errorLogs.push({ errorLines, exclusions });
     errorLogs.push("^^^---Applied patch with errors");
-    createAndApplyPatch(lastTemplateRepoCommit, exclusions);
+    if (errorLines.length) createAndApplyPatch(lastTemplateRepoCommit, exclusions);
   }
 };
 
