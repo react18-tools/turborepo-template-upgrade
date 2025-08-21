@@ -3,6 +3,37 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import { resolve } from "path";
 import { resolvePackageJSONConflicts } from "./utils";
 
+const DEFAULT_LAST_TURBO_COMMIT = "159692443c7a196d86c2612f752ae1d0786b004b";
+const errorLogs: unknown[] = [];
+
+let patchRecurseCount = 0;
+const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[]) => {
+  if (patchRecurseCount++ > 3) return;
+  const diffCmd = `git diff ${lastTemplateRepoCommit} template/main -- ${exclusions.join(" ")} .`;
+  const patch = execSync(diffCmd, { encoding: "utf8" });
+  writeFileSync(".template.patch", patch);
+
+  // 8. Apply patch
+  let patchLogs = "";
+  try {
+    patchLogs = execSync(
+      "git apply --3way --ignore-space-change --ignore-whitespace .template.patch",
+      { encoding: "utf8" },
+    );
+  } catch (err) {
+    patchLogs.split("\n").forEach(line => {
+      if (line.startsWith("error")) {
+        exclusions.push(line.split(":")[1].trim());
+        createAndApplyPatch(lastTemplateRepoCommit, exclusions);
+      }
+    });
+    console.error("Applied patch with errors: " /*, err*/);
+    errorLogs.push("Applied patch with errors: ");
+    errorLogs.push(err);
+    errorLogs.push("^^^---Applied patch with errors");
+  }
+};
+
 /**
  * Upgrade a repo created from the turborepo template.
  *
@@ -49,12 +80,11 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
       const filePath = resolve(cwd, ".turborepo-template.lst");
       if (existsSync(filePath)) {
         lastTemplateRepoCommit = readFileSync(filePath, "utf8").trim();
+      } else {
+        lastTemplateRepoCommit = DEFAULT_LAST_TURBO_COMMIT;
       }
     } else {
       lastTemplateRepoCommit = lastTemplateRepoCommit.trim();
-    }
-    if (!lastTemplateRepoCommit) {
-      throw new Error("❌ Last Turborepo template commit not found.");
     }
 
     // 5. Fetch latest template
@@ -81,18 +111,7 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     });
 
     // 7. Generate patch
-    const diffCmd = `git diff ${lastTemplateRepoCommit} template/main -- ${exclusions.join(" ")} .`;
-    const patch = execSync(diffCmd, { encoding: "utf8" });
-    writeFileSync(".template.patch", patch);
-
-    // 8. Apply patch
-    try {
-      execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
-        stdio: "inherit",
-      });
-    } catch (err) {
-      console.error("Applied patch with errors: " /*, err*/);
-    }
+    createAndApplyPatch(lastTemplateRepoCommit, exclusions);
 
     const templateLatestCommit = execSync("git rev-parse template/main", {
       encoding: "utf8",
@@ -108,4 +127,5 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
   } catch (err) {
     console.error("❌ Upgrade failed:", err);
   }
+  writeFileSync(".error.log", JSON.stringify(errorLogs));
 };
