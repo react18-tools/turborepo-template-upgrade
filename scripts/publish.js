@@ -61,12 +61,12 @@ execSync(`cd lib && pnpm build && npm publish ${provenance} --access public`);
 /** Create GitHub release */
 try {
   execSync(
-    `gh release create --target ${VERSION} --generate-notes --latest -n "$(sed '1,/^## /d;/^## /,$d' lib/CHANGELOG.md)" --title "Release v${VERSION}"`,
+    `gh release create ${VERSION} --generate-notes --latest -n "$(sed '1,/^## /d;/^## /,$d' lib/CHANGELOG.md)" --title "Release v${VERSION}"`,
   );
 } catch {
   try {
     execSync(
-      `gh release create --target ${VERSION} --generate-notes --latest --title "Release v${VERSION}"`,
+      `gh release create ${VERSION} --generate-notes --latest --title "Release v${VERSION}"`,
     );
   } catch {
     // ignore
