@@ -23,14 +23,14 @@ const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[
       "git apply --3way --ignore-space-change --ignore-whitespace .template.patch",
       { encoding: "utf8" },
     );
-  } catch (err) {
+  } catch (err: any) {
     patchLogs.split("\n").forEach(line => {
       if (line.startsWith("error")) {
         exclusions.push(line.split(":")[1].trim());
       }
     });
     errorLogs.push("Applied patch with errors: ");
-    errorLogs.push(err);
+    errorLogs.push({ err: err.stderr, exclusions });
     errorLogs.push("^^^---Applied patch with errors");
     createAndApplyPatch(lastTemplateRepoCommit, exclusions);
   }
@@ -81,13 +81,13 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     if (!lastTemplateRepoCommit) {
       const filePath = resolve(cwd, ".turborepo-template.lst");
       if (existsSync(filePath)) {
-        lastTemplateRepoCommit = readFileSync(filePath, "utf8").trim() || DEFAULT_LAST_TURBO_COMMIT;
-      } else {
-        lastTemplateRepoCommit = DEFAULT_LAST_TURBO_COMMIT;
+        lastTemplateRepoCommit = readFileSync(filePath, "utf8").trim();
       }
     } else {
       lastTemplateRepoCommit = lastTemplateRepoCommit.trim();
     }
+
+    lastTemplateRepoCommit ||= DEFAULT_LAST_TURBO_COMMIT;
 
     // 5. Fetch latest template
     execSync("git fetch template");
