@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.0.5
+
+### Patch Changes
+
+- eeb85c4: fix: Simplify CLI template upgrade invocation by removing argument check - ensure default commit id is used
+
 ## 0.0.4
 
 ### Patch Changes
