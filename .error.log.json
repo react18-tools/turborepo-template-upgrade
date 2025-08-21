@@ -1,1 +1,82 @@
-[]
+[
+  "Applied patch with errors: ",
+  {
+    "err": "error: No valid patches in input (allow with \"--allow-empty\")\n",
+    "exclusions": [
+      ":!docs",
+      ":!lib",
+      ":!scripts/rebrand.config.json",
+      ":!pnpm-lock.yaml",
+      ":!.lst",
+      ":!.turborepo-template.lst",
+      ":!scripts/templates",
+      ":!examples/express",
+      ":!examples/remix",
+      ":!packages/logger",
+      ":!packages/jest-presets",
+      ":!scripts/rebrand.js",
+      ":!scripts/rebrander.js"
+    ]
+  },
+  "^^^---Applied patch with errors",
+  "Applied patch with errors: ",
+  {
+    "err": "error: No valid patches in input (allow with \"--allow-empty\")\n",
+    "exclusions": [
+      ":!docs",
+      ":!lib",
+      ":!scripts/rebrand.config.json",
+      ":!pnpm-lock.yaml",
+      ":!.lst",
+      ":!.turborepo-template.lst",
+      ":!scripts/templates",
+      ":!examples/express",
+      ":!examples/remix",
+      ":!packages/logger",
+      ":!packages/jest-presets",
+      ":!scripts/rebrand.js",
+      ":!scripts/rebrander.js"
+    ]
+  },
+  "^^^---Applied patch with errors",
+  "Applied patch with errors: ",
+  {
+    "err": "error: No valid patches in input (allow with \"--allow-empty\")\n",
+    "exclusions": [
+      ":!docs",
+      ":!lib",
+      ":!scripts/rebrand.config.json",
+      ":!pnpm-lock.yaml",
+      ":!.lst",
+      ":!.turborepo-template.lst",
+      ":!scripts/templates",
+      ":!examples/express",
+      ":!examples/remix",
+      ":!packages/logger",
+      ":!packages/jest-presets",
+      ":!scripts/rebrand.js",
+      ":!scripts/rebrander.js"
+    ]
+  },
+  "^^^---Applied patch with errors",
+  "Applied patch with errors: ",
+  {
+    "err": "error: No valid patches in input (allow with \"--allow-empty\")\n",
+    "exclusions": [
+      ":!docs",
+      ":!lib",
+      ":!scripts/rebrand.config.json",
+      ":!pnpm-lock.yaml",
+      ":!.lst",
+      ":!.turborepo-template.lst",
+      ":!scripts/templates",
+      ":!examples/express",
+      ":!examples/remix",
+      ":!packages/logger",
+      ":!packages/jest-presets",
+      ":!scripts/rebrand.js",
+      ":!scripts/rebrander.js"
+    ]
+  },
+  "^^^---Applied patch with errors"
+]
