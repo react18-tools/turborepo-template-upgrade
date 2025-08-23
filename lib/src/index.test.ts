@@ -1,13 +1,13 @@
 import { describe, test } from "vitest";
 import { upgradeTemplate } from ".";
 import lstCommit from "../../.turborepo-template.lst?raw";
-import { execSync } from "child_process";
+import { rmSync } from "fs";
+import { resolve } from "path";
 
 describe("upgrade", () => {
-  test("smoke", ({ expect }) => {
-    upgradeTemplate(lstCommit.trim());
-    upgradeTemplate();
-    execSync("rm ../.turborepo-template.lst");
+  test("smoke", async ({ expect }) => {
+    await Promise.all([upgradeTemplate(lstCommit.trim()), upgradeTemplate()]);
+    rmSync(resolve(process.cwd(), "./.turborepo-template.lst"));
     upgradeTemplate();
     expect(true).toBe(true);
   });
