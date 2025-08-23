@@ -96,6 +96,10 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
 
     // 6. Build exclusion list
     const exclusions = [
+      "CHANGELOG.md",
+      "SECURITY.md",
+      "TODO.md",
+      "FEATURED.md",
       "docs",
       "lib",
       "scripts/rebrand.config.json",
