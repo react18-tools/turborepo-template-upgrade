@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.1.0
+
+### Minor Changes
+
+- c8f66e8: feat: Add additional files to exclusion list in upgradeTemplate
+
 ## 0.0.8
 
 ### Patch Changes
