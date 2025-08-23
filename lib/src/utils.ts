@@ -30,7 +30,7 @@ export const getBaseCommit = () => {
   const firstDate = new Date(firstCommitDate);
 
   // 3. Get template commits
-  const templateCommits = execSync("git log --format='%H %ai' template/main", { encoding: "utf8" })
+  const templateCommits = execSync("git log --format=%H::%ai template/main", { encoding: "utf8" })
     .trim()
     .split("\n")
     .map(line => {
