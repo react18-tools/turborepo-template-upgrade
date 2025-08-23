@@ -34,13 +34,13 @@ export const getBaseCommit = () => {
     .trim()
     .split("\n")
     .map(line => {
-      const [hash, ...rest] = line.split(" ");
-      return { hash, date: new Date(rest.join(" ")) };
+      const [hash, dateStr] = line.split("::");
+      return { hash, date: new Date(dateStr.trim()) };
     })
     .reverse();
 
   // 4. Find latest commit before or equal to firstDate
-  let baseCommit = templateCommits.find(c => c.date <= firstDate);
+  const baseCommit = templateCommits.find(c => c.date >= firstDate);
 
   if (baseCommit) {
     return baseCommit.hash;
