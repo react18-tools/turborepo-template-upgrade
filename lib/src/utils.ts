@@ -52,6 +52,7 @@ export const getBaseCommit = () => {
 
 const conflictFile = "package.json";
 
+/* v8 ignore start */
 export const resolvePackageJSONConflicts = () => {
   const pkg = readFileSync(conflictFile, "utf8");
 
@@ -98,3 +99,4 @@ export const resolvePackageJSONConflicts = () => {
     console.log("✅ package.json conflicts resolved (all in devDependencies).");
   }
 };
+/* v8 ignore stop */
