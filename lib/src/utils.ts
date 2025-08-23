@@ -43,6 +43,7 @@ export const getBaseCommit = () => {
   const baseCommit = templateCommits.find(c => c.date >= firstDate);
 
   if (baseCommit) {
+    console.info("Applying changes from ", baseCommit.hash, " dated ", baseCommit.date);
     return baseCommit.hash;
   }
 

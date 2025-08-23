@@ -83,6 +83,7 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     // 6. Build exclusion list
     const exclusions = [
       "CHANGELOG.md",
+      "**/CHANGELOG.md",
       "SECURITY.md",
       "TODO.md",
       "FEATURED.md",
@@ -92,6 +93,7 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
       "pnpm-lock.yaml",
       ".lst",
       ".turborepo-template.lst",
+      ".vscode/settings.json",
     ].map(entry => `:!${entry}`);
 
     [
