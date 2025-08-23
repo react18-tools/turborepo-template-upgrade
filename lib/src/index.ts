@@ -1,12 +1,14 @@
 import { execSync } from "child_process";
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { writeFileSync, existsSync } from "fs";
 import { resolve } from "path";
-import { resolvePackageJSONConflicts } from "./utils";
+import { cdToRepoRoot, getBaseCommit, resolvePackageJSONConflicts } from "./utils";
 
-const DEFAULT_LAST_TURBO_COMMIT = "159692443c7a196d86c2612f752ae1d0786b004b";
 const errorLogs: unknown[] = [];
 
 let patchRecurseCount = 0;
+/**
+ * Create and apply patch
+ */
 const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[]) => {
   if (patchRecurseCount++ > 3) {
     patchRecurseCount = 0;
@@ -49,17 +51,9 @@ const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[
  * @param lastTemplateRepoCommit Optional SHA of last applied template commit.
  */
 export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
-  // 1. Move to repo root
-  let cwd = process.cwd();
-  while (
-    cwd !== "/" &&
-    !(existsSync(resolve(cwd, "pnpm-lock.yaml")) && existsSync(resolve(cwd, "pnpm-workspace.yaml")))
-  ) {
-    cwd = resolve(cwd, "..");
-  }
-  process.chdir(cwd);
+  const cwd = cdToRepoRoot();
 
-  // 2. Ensure git tree is clean
+  // Ensure git tree is clean
   try {
     execSync("git diff --quiet");
     execSync("git diff --cached --quiet");
@@ -68,7 +62,7 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
     return;
   }
 
-  // 3. Ensure template remote exists
+  // Ensure template remote exists
   try {
     execSync("git remote add template https://github.com/react18-tools/turborepo-template");
   } catch {
@@ -76,19 +70,11 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
   }
 
   try {
-    // 4. Determine last template commit
+    // Determine last template commit
     if (!lastTemplateRepoCommit) {
-      const filePath = resolve(cwd, ".turborepo-template.lst");
-      if (existsSync(filePath)) {
-        lastTemplateRepoCommit = readFileSync(filePath, "utf8").trim();
-      }
+      lastTemplateRepoCommit = getBaseCommit();
     } else {
       lastTemplateRepoCommit = lastTemplateRepoCommit.trim();
-    }
-
-    if (!lastTemplateRepoCommit?.trim()) {
-      lastTemplateRepoCommit = DEFAULT_LAST_TURBO_COMMIT;
-      console.log("using default base commit: ", lastTemplateRepoCommit);
     }
 
     // 5. Fetch latest template
