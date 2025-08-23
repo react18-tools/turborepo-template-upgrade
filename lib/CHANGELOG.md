@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.2.0
+
+### Minor Changes
+
+- 7023f8f: Select base-commit based on git history for older repos
+
 ## 0.1.0
 
 ### Minor Changes
