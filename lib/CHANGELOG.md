@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.2.2
+
+### Patch Changes
+
+- 830195e: Add changelog and vscode settings to exclusions and post info message for the last date and commit used.
+
 ## 0.2.1
 
 ### Patch Changes
