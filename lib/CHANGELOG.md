@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.2.1
+
+### Patch Changes
+
+- b2952e7: Fix git log format in getBaseCommit function
+
 ## 0.2.0
 
 ### Minor Changes
