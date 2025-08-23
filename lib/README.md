@@ -6,13 +6,15 @@
 
 **Seamlessly keep your repo in sync with [turborepo-template](https://github.com/react18-tools/turborepo-template).**
 
-<<<<<<< ours
----
+## <<<<<<< ours
+
 =======
+
 > Now it is super easy to use this template. Just run `pnpm create r18` and provide your project name. That's it, we will automatically load the template and initiate rebranding.
 
 > Exciting news! We've launched a new course to help you master this template: [Craft Next Gen UI Libraries for React 18 and Next.js 14](https://www.udemy.com/course/craft-next-gen-ui-libraries-for-react-18-and-nextjs-14/?referralCode=46B8C7845ECCEA99E0EF)
->>>>>>> theirs
+>
+> > > > > > > theirs
 
 ## 🚀 Purpose
 
@@ -61,15 +63,16 @@ If there are remaining conflicts, you’ll see them in `.template.patch`.
 ## 🧩 Conflict Resolution
 
 <<<<<<< ours
+
 - **`package.json`** merges are handled automatically:
   - Keeps your dependencies.
   - Brings in template upgrades.
-  - Deduplicates versions.
-=======
-> You can also start by running `pnpm dlx create-turbo@latest --example https://github.com/react18-tools/turborepo-template/` in command line interface.
+  - # Deduplicates versions.
+    > You can also start by running `pnpm dlx create-turbo@latest --example https://github.com/react18-tools/turborepo-template/` in command line interface.
 
 ## What's Different from Turborepo official templates?
->>>>>>> theirs
+
+> > > > > > > theirs
 
 - For other files, standard `git apply --3way` conflict markers may appear.
 
