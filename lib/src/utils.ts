@@ -82,5 +82,15 @@ export const resolvePackageJSONConflicts = () => {
       },
     },
   });
+
+  resolveConflicts({
+    include: ["**/package.json"],
+    exclude: ["package.json"],
+    defaultStrategy: ["merge", "ours"],
+    rules: {
+      "devDependencies.*": ["merge", "theirs"],
+      "dependencies.*": ["merge", "theirs"],
+    },
+  });
 };
 /* v8 ignore stop */
