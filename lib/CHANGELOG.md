@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.0
+
+### Minor Changes
+
+- c62743f: Use git-json-resolver
+
 ## 0.2.2
 
 ### Patch Changes
