@@ -55,7 +55,7 @@ export const getBaseCommit = () => {
 /* v8 ignore start */
 export const resolvePackageJSONConflicts = async () => {
   const rebrandExists = existsSync("scripts/rebrand.js");
-  const typeDocExists = execSync("typedoc.config.js");
+  const typeDocExists = existsSync("typedoc.config.js");
 
   console.log({ cwd: process.cwd() });
 
