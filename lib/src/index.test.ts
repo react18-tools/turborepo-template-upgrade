@@ -6,9 +6,11 @@ import { execSync } from "child_process";
 
 describe("upgrade", () => {
   test("smoke", async ({ expect }) => {
-    await Promise.all([upgradeTemplate(lstCommit.trim()), upgradeTemplate()]);
+    await upgradeTemplate(lstCommit.trim());
     getBaseCommit();
+    execSync("git restore --stage .");
     execSync("git restore .");
+    await upgradeTemplate();
     expect(true).toBe(true);
   });
 });
