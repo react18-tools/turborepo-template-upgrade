@@ -1,6 +1,7 @@
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { execSync } from "child_process";
 import { resolve } from "path";
+import { InbuiltMergeStrategies, resolveConflicts, StrategyStatus } from "git-json-resolver";
 
 export const cdToRepoRoot = () => {
   let cwd = process.cwd();
@@ -51,53 +52,35 @@ export const getBaseCommit = () => {
   return DEFAULT_LAST_TURBO_COMMIT;
 };
 
-const conflictFile = "package.json";
-
 /* v8 ignore start */
 export const resolvePackageJSONConflicts = () => {
-  const pkg = readFileSync(conflictFile, "utf8");
+  const rebrandExists = existsSync("scripts/rebrand.js");
+  const typeDocExists = execSync("typedoc.config.js");
 
-  if (pkg.includes("<<<<<<<")) {
-    console.log("⚠️ Resolving package.json conflicts...");
-
-    // crude parse: keep 'ours' block as base
-    const ours = pkg.split("<<<<<<< ours")[1].split("=======")[0].trim();
-    const theirs = pkg.split("=======")[1].split(">>>>>>> theirs")[0].trim();
-
-    const oursJson = JSON.parse("{" + ours.replace(/,$/, "") + "}");
-    const theirsJson = JSON.parse("{" + theirs.replace(/,$/, "") + "}");
-
-    const finalDeps = { ...oursJson };
-    const blacklist = ["typedoc", "plop", "enquirer"];
-    const blacklistPrefix = "typedoc-plugin-";
-
-    for (const [k, v] of Object.entries(theirsJson)) {
-      if (blacklist.includes(k) || k.startsWith(blacklistPrefix)) {
-        continue; // drop
-      }
-      if (!(k in finalDeps)) {
-        finalDeps[k] = v;
-      }
-    }
-
-    // Remove conflict markers and parse whole JSON
-    const cleaned = readFileSync(conflictFile, "utf8").replace(
-      /<<<<<<<[\s\S]*?=======([\s\S]*?)>>>>>>> theirs/g,
-      (_, theirs) => theirs.trim(),
-    );
-
-    const originalJson = JSON.parse(cleaned);
-
-    // Merge everything into devDependencies only
-    originalJson.devDependencies = {
-      ...(originalJson.devDependencies || {}),
-      ...(originalJson.dependencies || {}),
-      ...finalDeps,
-    };
-    delete originalJson.dependencies; // kill dependencies
-
-    writeFileSync(conflictFile, JSON.stringify(originalJson, null, 2));
-    console.log("✅ package.json conflicts resolved (all in devDependencies).");
-  }
+  resolveConflicts<InbuiltMergeStrategies | "ignore-removed">({
+    include: ["package.json"],
+    defaultStrategy: ["merge", "ours"],
+    rules: {
+      "devDependencies.*": ["merge", "ignore-removed", "theirs"],
+      "dependencies.*": ["merge", "ignore-removed", "theirs"],
+    },
+    customStrategies: {
+      "ignore-removed": ({ theirs, path }) => {
+        if (
+          (!rebrandExists && /enquirer$/.test(path)) ||
+          (!typeDocExists && /typedoc/.test(path))
+        ) {
+          return {
+            status: StrategyStatus.OK,
+            value: undefined,
+          };
+        }
+        return {
+          status: StrategyStatus.OK,
+          value: theirs,
+        };
+      },
+    },
+  });
 };
 /* v8 ignore stop */
