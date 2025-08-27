@@ -50,7 +50,7 @@ const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[
  *
  * @param lastTemplateRepoCommit Optional SHA of last applied template commit.
  */
-export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
+export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
   const cwd = cdToRepoRoot();
 
   // Ensure git tree is clean
@@ -117,7 +117,7 @@ export const upgradeTemplate = (lastTemplateRepoCommit?: string) => {
 
     writeFileSync(".turborepo-template.lst", templateLatestCommit);
 
-    resolvePackageJSONConflicts();
+    await resolvePackageJSONConflicts();
 
     execSync("git add ./package.json");
 

@@ -53,11 +53,13 @@ export const getBaseCommit = () => {
 };
 
 /* v8 ignore start */
-export const resolvePackageJSONConflicts = () => {
+export const resolvePackageJSONConflicts = async () => {
   const rebrandExists = existsSync("scripts/rebrand.js");
   const typeDocExists = execSync("typedoc.config.js");
 
-  resolveConflicts<InbuiltMergeStrategies | "ignore-removed">({
+  console.log({ cwd: process.cwd() });
+
+  await resolveConflicts<InbuiltMergeStrategies | "ignore-removed">({
     include: ["package.json"],
     defaultStrategy: ["merge", "ours"],
     rules: {
@@ -65,7 +67,8 @@ export const resolvePackageJSONConflicts = () => {
       "dependencies.*": ["merge", "ignore-removed", "theirs"],
     },
     customStrategies: {
-      "ignore-removed": ({ theirs, path }) => {
+      "ignore-removed": ({ theirs, path, ...args }) => {
+        console.log({ theirs, path, ...args });
         if (
           (!rebrandExists && /enquirer$/.test(path)) ||
           (!typeDocExists && /typedoc/.test(path))
@@ -83,7 +86,7 @@ export const resolvePackageJSONConflicts = () => {
     },
   });
 
-  resolveConflicts({
+  await resolveConflicts({
     include: ["**/package.json"],
     exclude: ["package.json"],
     defaultStrategy: ["merge", "ours"],
