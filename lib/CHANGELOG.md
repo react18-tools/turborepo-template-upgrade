@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.10
+
+### Patch Changes
+
+- 5693940: fix: handle file separator issues in matcher
+
 ## 0.3.9
 
 ### Patch Changes
