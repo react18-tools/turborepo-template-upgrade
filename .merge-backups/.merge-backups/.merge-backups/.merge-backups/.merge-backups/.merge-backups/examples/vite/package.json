@@ -26,11 +26,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.8",
-<<<<<<< ours
     "@vitejs/plugin-react": "^5.0.2",
-=======
-    "@vitejs/plugin-react": "^5.0.1",
->>>>>>> theirs
     "typescript": "^5.9.2",
     "vite": "^7.1.3"
   }
