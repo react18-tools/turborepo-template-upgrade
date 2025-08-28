@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.9
+
+### Patch Changes
+
+- 680203e: Isolate logs per run
+
 ## 0.3.8
 
 ### Patch Changes
