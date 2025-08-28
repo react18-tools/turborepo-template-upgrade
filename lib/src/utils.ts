@@ -62,7 +62,7 @@ export const resolvePackageJSONConflicts = async () => {
 
   await resolveConflicts<InbuiltMergeStrategies | "ignore-removed">({
     include: ["package.json"],
-    // defaultStrategy: ["merge", "ours"],
+    defaultStrategy: ["merge", "ours"],
     rules: {
       "devDependencies.*": ["ignore-removed", "theirs"],
       "dependencies.*": ["ignore-removed", "theirs"],
@@ -91,7 +91,7 @@ export const resolvePackageJSONConflicts = async () => {
 
   await resolveConflicts({
     include: ["**/package.json"],
-    exclude: ["package.json", "**/node_modules/**", "**/dist/**"],
+    exclude: ["package.json", "**/dist/**"],
     defaultStrategy: ["merge", "ours"],
     rules: {
       "devDependencies.*": ["merge", "theirs"],
