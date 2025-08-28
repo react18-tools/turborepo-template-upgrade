@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.2
+
+### Patch Changes
+
+- 3ebf5f5: Add logs - use debug mode
+
 ## 0.3.1
 
 ### Patch Changes
