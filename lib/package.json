@@ -18,7 +18,8 @@
   "bin": {
     "turborepo-template-upgrade": "./dist/cli.mjs",
     "turborepo-template-sync": "./dist/sync.mjs",
-    "tt-sync": "./dist/sync.mjs"
+    "tt-sync": "./dist/sync.mjs",
+    "tt-upgrade": "./dist/cli.mjs"
   },
   "exports": {
     ".": {

@@ -48,6 +48,8 @@ Inside a repo created with [turborepo-template](https://github.com/react18-tools
 npx turborepo-template-upgrade
 ```
 
+> <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 40px"/> We just released a shorthand -- pnpx tt-upgrade
+
 This will:
 
 1. Fetch the latest changes from the template repo.
