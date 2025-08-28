@@ -119,8 +119,6 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
 
     await resolvePackageJSONConflicts();
 
-    execSync("git add ./package.json");
-
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
   } catch (err) {
     console.error("❌ Upgrade failed:", err);
