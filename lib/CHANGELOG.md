@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.5
+
+### Patch Changes
+
+- a09cf07: fix logs
+
 ## 0.3.4
 
 ### Patch Changes
