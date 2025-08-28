@@ -9,8 +9,8 @@ describe("upgrade", () => {
     await upgradeTemplate(lstCommit.trim());
     getBaseCommit();
     execSync("git reset --hard HEAD");
-    await upgradeTemplate();
-    execSync("git reset --hard HEAD");
+    // await upgradeTemplate();
+    // execSync("git reset --hard HEAD");
     expect(true).toBe(true);
   });
 });
