@@ -17,3 +17,6 @@ tsup.config.bundled*
 
 # patch file
 *.patch
+
+# Merge backup
+.merge-backups
