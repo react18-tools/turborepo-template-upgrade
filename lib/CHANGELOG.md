@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.3
+
+### Patch Changes
+
+- 89fbef5: Improve logging
+
 ## 0.3.2
 
 ### Patch Changes
