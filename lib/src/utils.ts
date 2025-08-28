@@ -56,6 +56,7 @@ export const getBaseCommit = () => {
 export const resolvePackageJSONConflicts = async () => {
   const rebrandExists = existsSync("scripts/rebrand.js");
   const typeDocExists = existsSync("typedoc.config.js");
+  const plopExists = execSync("scripts/templates");
 
   console.log({ cwd: process.cwd() });
 
@@ -67,12 +68,11 @@ export const resolvePackageJSONConflicts = async () => {
       "dependencies.*": ["ignore-removed", "theirs"],
     },
     customStrategies: {
-      "ignore-removed": ({ theirs, path, ...args }) => {
-        console.log("Why am I not reaching here?");
-        console.log({ theirs, path, ...args });
+      "ignore-removed": ({ theirs, path }) => {
         if (
           (!rebrandExists && /enquirer$/.test(path)) ||
-          (!typeDocExists && /typedoc/.test(path))
+          (!typeDocExists && /typedoc/.test(path)) ||
+          (!plopExists && /plop/.test(path))
         ) {
           return {
             status: StrategyStatus.OK,
@@ -98,6 +98,10 @@ export const resolvePackageJSONConflicts = async () => {
       "dependencies.*": ["merge", "theirs"],
     },
     debug: true,
+    writeConflictSidecar: true,
+    loggerConfig: {
+      logDir: ".logs2",
+    },
   });
 };
 /* v8 ignore stop */
