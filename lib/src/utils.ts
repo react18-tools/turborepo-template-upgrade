@@ -68,6 +68,7 @@ export const resolvePackageJSONConflicts = async () => {
     },
     customStrategies: {
       "ignore-removed": ({ theirs, path, ...args }) => {
+        console.log("Why am I not reaching here?");
         console.log({ theirs, path, ...args });
         if (
           (!rebrandExists && /enquirer$/.test(path)) ||
@@ -84,6 +85,8 @@ export const resolvePackageJSONConflicts = async () => {
         };
       },
     },
+    debug: true,
+    writeConflictSidecar: true,
   });
 
   await resolveConflicts({
