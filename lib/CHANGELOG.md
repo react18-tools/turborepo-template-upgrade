@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.12
+
+### Patch Changes
+
+- f38bd7e: Update README
+
 ## 0.3.11
 
 ### Patch Changes
