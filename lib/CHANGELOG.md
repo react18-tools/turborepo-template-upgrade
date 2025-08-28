@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.8
+
+### Patch Changes
+
+- 3948528: fix typo
+
 ## 0.3.7
 
 ### Patch Changes
