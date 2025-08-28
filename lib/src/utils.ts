@@ -91,7 +91,7 @@ export const resolvePackageJSONConflicts = async () => {
 
   await resolveConflicts({
     include: ["**/package.json"],
-    exclude: ["package.json", "node_modules/**", "dist/**"],
+    exclude: ["package.json", "**/node_modules/**", "**/dist/**"],
     defaultStrategy: ["merge", "ours"],
     rules: {
       "devDependencies.*": ["merge", "theirs"],
