@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.4
+
+### Patch Changes
+
+- d423527: fix: avoid walking through node_modules
+
 ## 0.3.3
 
 ### Patch Changes
