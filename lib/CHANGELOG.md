@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.11
+
+### Patch Changes
+
+- bc1a5d1: Fix: ensure git fetch before attempting to get baseCommit
+
 ## 0.3.10
 
 ### Patch Changes
