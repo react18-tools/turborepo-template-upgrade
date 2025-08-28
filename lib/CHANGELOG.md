@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.7
+
+### Patch Changes
+
+- 2babba4: Separate logs and handle plop dep
+
 ## 0.3.6
 
 ### Patch Changes
