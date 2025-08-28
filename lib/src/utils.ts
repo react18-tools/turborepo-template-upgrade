@@ -97,6 +97,7 @@ export const resolvePackageJSONConflicts = async () => {
       "devDependencies.*": ["merge", "theirs"],
       "dependencies.*": ["merge", "theirs"],
     },
+    debug: true,
   });
 };
 /* v8 ignore stop */
