@@ -115,6 +115,10 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
     await resolvePackageJSONConflicts();
 
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
+
+    console.log(
+      "Please resolve andy merge conflicts and 📦 re-install dependencies by running pnpm i.",
+    );
   } catch (err) {
     console.error("❌ Upgrade failed:", err);
   }
