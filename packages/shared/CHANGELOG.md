@@ -1,5 +1,12 @@
 # @repo/shared
 
+## 0.0.14
+
+### Patch Changes
+
+- Updated dependencies [faa6320]
+  - turborepo-template-upgrade@0.3.1
+
 ## 0.0.13
 
 ### Patch Changes

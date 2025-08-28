@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.1
+
+### Patch Changes
+
+- faa6320: Fix: exclude node modules
+
 ## 0.3.0
 
 ### Minor Changes
