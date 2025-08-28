@@ -1,0 +1,50 @@
+{
+  "name": "turborepo-template",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "clean": "turbo clean",
+    "dev": "turbo dev",
+    "format": "prettier --write \"**/*.{js,jsx,json,ts,tsx,md,css,scss}\"",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
+    "sync": "turborepo-template-upgrade",
+    "test": "turbo test",
+    "typecheck": "turbo typecheck",
+    "preinstall": "node scripts/update-pm.js"
+  },
+  "pre-commit": [
+    "lint:fix",
+    "format"
+  ],
+  "devDependencies": {
+    "@changesets/cli": "^2.29.6",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^24.3.0",
+    "enquirer": "^2.4.1",
+    "plop": "^4.0.1",
+    "pre-commit": "^1.2.2",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.6",
+<<<<<<< ours
+    "turborepo-template-upgrade": "^0.3.5",
+=======
+    "turborepo-template-upgrade": "^0.3.3",
+>>>>>>> theirs
+    "typedoc": "^0.28.11",
+    "typedoc-plugin-markdown": "^4.8.1",
+    "typedoc-plugin-mdn-links": "^5.0.9",
+    "typedoc-plugin-missing-exports": "^4.1.0",
+    "typedoc-plugin-rename-defaults": "^0.7.3"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "pnpm": {
+    "overrides": {
+      "cross-spawn@<6.0.6": ">=6.0.6",
+      "next@>=15.0.0 <15.2.3": ">=15.2.3"
+    }
+  }
+}
