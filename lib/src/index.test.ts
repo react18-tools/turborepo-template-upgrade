@@ -8,11 +8,9 @@ describe("upgrade", () => {
   test("smoke", async ({ expect }) => {
     await upgradeTemplate(lstCommit.trim());
     getBaseCommit();
-    execSync("git restore --stage .");
-    execSync("git restore .");
+    execSync("git reset --hard HEAD");
     await upgradeTemplate();
-    execSync("git restore --stage .");
-    execSync("git restore .");
+    execSync("git reset --hard HEAD");
     expect(true).toBe(true);
   });
 });
