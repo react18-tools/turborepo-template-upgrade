@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.3.6
+
+### Patch Changes
+
+- 1285f9a: fix: Ensure relative path in matcher to ensure proper pattern matching
+
 ## 0.3.5
 
 ### Patch Changes
