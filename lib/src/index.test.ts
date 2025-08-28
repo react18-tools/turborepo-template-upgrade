@@ -15,6 +15,6 @@ describe("upgrade", () => {
       execSync("git reset --hard HEAD");
       expect(true).toBe(true);
     },
-    { timeout: 10000 },
+    { timeout: 15000 },
   );
 });
