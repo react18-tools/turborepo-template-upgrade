@@ -9,12 +9,12 @@ let patchRecurseCount = 0;
 /**
  * Create and apply patch
  */
-const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[]) => {
+const createAndApplyPatch = (baseCommit: string, exclusions: string[]) => {
   if (patchRecurseCount++ > 3) {
     patchRecurseCount = 0;
     return;
   }
-  const diffCmd = `git diff ${lastTemplateRepoCommit} template/main -- ${exclusions.join(" ")} .`;
+  const diffCmd = `git diff ${baseCommit} template/main -- ${exclusions.join(" ")} .`;
   const patch = execSync(diffCmd, { encoding: "utf8" });
   writeFileSync(".template.patch", patch);
 
@@ -33,7 +33,7 @@ const createAndApplyPatch = (lastTemplateRepoCommit: string, exclusions: string[
     errorLogs.push("Applied patch with errors: ");
     errorLogs.push({ errorLines, exclusions });
     errorLogs.push("^^^---Applied patch with errors");
-    if (errorLines.length) createAndApplyPatch(lastTemplateRepoCommit, exclusions);
+    if (errorLines.length) createAndApplyPatch(baseCommit, exclusions);
   }
 };
 
@@ -70,17 +70,12 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
   }
 
   try {
-    // Determine last template commit
-    if (!lastTemplateRepoCommit) {
-      lastTemplateRepoCommit = getBaseCommit();
-    } else {
-      lastTemplateRepoCommit = lastTemplateRepoCommit.trim();
-    }
-
-    // 5. Fetch latest template
     execSync("git fetch template");
 
-    // 6. Build exclusion list
+    // Determine last template commit
+    const baseCommit = lastTemplateRepoCommit?.trim() || getBaseCommit();
+
+    // Build exclusion list
     const exclusions = [
       "CHANGELOG.md",
       "**/CHANGELOG.md",
@@ -109,7 +104,7 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
     });
 
     // 7. Generate patch
-    createAndApplyPatch(lastTemplateRepoCommit, exclusions);
+    createAndApplyPatch(baseCommit, exclusions);
 
     const templateLatestCommit = execSync("git rev-parse template/main", {
       encoding: "utf8",
