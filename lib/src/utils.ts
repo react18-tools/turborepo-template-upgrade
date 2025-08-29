@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "fs";
 import { execSync } from "child_process";
 import { resolve } from "path";
 import { InbuiltMergeStrategies, resolveConflicts, StrategyStatus } from "git-json-resolver";
+import { DROP } from "git-json-resolver/utils";
 
 export const cdToRepoRoot = () => {
   let cwd = process.cwd();
@@ -72,15 +73,21 @@ export const resolvePackageJSONConflicts = async () => {
         if (
           (!rebrandExists && /enquirer$/.test(path)) ||
           (!typeDocExists && /typedoc/.test(path)) ||
-          (!plopExists && /plop/.test(path)) ||
-          // Ignore removed internal packages - demo lib
-          (/react18-loaders/.test(path) && theirs === "workspace:*")
+          (!plopExists && /plop/.test(path))
         ) {
           return {
             status: StrategyStatus.OK,
-            value: undefined,
+            value: DROP,
           };
         }
+
+        if (/react18-loaders/.test(path)) {
+          return {
+            status: StrategyStatus.OK,
+            value: "latest",
+          };
+        }
+
         return {
           status: StrategyStatus.OK,
           value: theirs,
