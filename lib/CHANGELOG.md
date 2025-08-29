@@ -1,5 +1,16 @@
 # turborepo-template-upgrade
 
+## 0.4.0
+
+### Minor Changes
+
+- d6cd0cf: Reduce logging and auto re-install dependencies after upgradng and resolving packages.
+
+### Patch Changes
+
+- 2aaba57: Ignore removed react18-loaders@workspace:\* packages
+- 9febdb8: Exclude Readme as those updates will only be related to the template itself and not the libray that is created.
+
 ## 0.3.12
 
 ### Patch Changes
