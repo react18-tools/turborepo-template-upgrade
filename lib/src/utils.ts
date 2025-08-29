@@ -72,7 +72,9 @@ export const resolvePackageJSONConflicts = async () => {
         if (
           (!rebrandExists && /enquirer$/.test(path)) ||
           (!typeDocExists && /typedoc/.test(path)) ||
-          (!plopExists && /plop/.test(path))
+          (!plopExists && /plop/.test(path)) ||
+          // Ignore removed internal packages - demo lib
+          (/react18-loaders/.test(path) && theirs === "workspace:*")
         ) {
           return {
             status: StrategyStatus.OK,
