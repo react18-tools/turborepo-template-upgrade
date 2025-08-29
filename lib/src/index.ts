@@ -78,6 +78,7 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
     // Build exclusion list
     const exclusions = [
       "CHANGELOG.md",
+      "README.md",
       "**/CHANGELOG.md",
       "SECURITY.md",
       "TODO.md",
