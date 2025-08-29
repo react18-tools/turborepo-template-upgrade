@@ -117,9 +117,9 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
 
     console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
 
-    console.log(
-      "Please resolve andy merge conflicts and 📦 re-install dependencies by running pnpm i.",
-    );
+    console.log("Reinstalling dependencies...");
+
+    execSync("pnpm i", { stdio: "inherit" });
   } catch (err) {
     console.error("❌ Upgrade failed:", err);
   }

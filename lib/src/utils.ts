@@ -87,8 +87,6 @@ export const resolvePackageJSONConflicts = async () => {
         };
       },
     },
-    debug: true,
-    writeConflictSidecar: true,
   });
 
   await resolveConflicts({
@@ -99,8 +97,6 @@ export const resolvePackageJSONConflicts = async () => {
       "devDependencies.*": ["merge", "theirs"],
       "dependencies.*": ["merge", "theirs"],
     },
-    debug: true,
-    writeConflictSidecar: true,
     loggerConfig: {
       logDir: ".logs2",
     },

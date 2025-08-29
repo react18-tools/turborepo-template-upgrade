@@ -88,6 +88,6 @@
     "mayank1513"
   ],
   "dependencies": {
-    "git-json-resolver": "^0.1.8"
+    "git-json-resolver": "^1.0.0"
   }
 }
