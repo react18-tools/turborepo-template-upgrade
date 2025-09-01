@@ -81,13 +81,6 @@ export const resolvePackageJSONConflicts = async () => {
           };
         }
 
-        if (/react18-loaders/.test(path)) {
-          return {
-            status: StrategyStatus.OK,
-            value: "latest",
-          };
-        }
-
         return {
           status: StrategyStatus.OK,
           value: theirs,
@@ -101,11 +94,17 @@ export const resolvePackageJSONConflicts = async () => {
     exclude: ["package.json", "**/dist/**"],
     defaultStrategy: ["merge", "ours"],
     rules: {
-      "devDependencies.*": ["merge", "theirs"],
-      "dependencies.*": ["merge", "theirs"],
+      "devDependencies.*": ["merge", "semver-max"],
+      "dependencies.*": ["merge", "semver-max"],
     },
     loggerConfig: {
       logDir: ".logs2",
+    },
+    plugins: ["git-json-resolver-semver"],
+    pluginConfig: {
+      "git-json-resolver-semver": {
+        preferValid: true,
+      },
     },
   });
 };

@@ -88,6 +88,7 @@
     "mayank1513"
   ],
   "dependencies": {
-    "git-json-resolver": "^1.1.0"
+    "git-json-resolver": "^1.2.0",
+    "git-json-resolver-semver": "^0.0.0"
   }
 }
