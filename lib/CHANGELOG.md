@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.5.1
+
+### Patch Changes
+
+- 9fc986f: Add semever aware strategies.
+
 ## 0.5.0
 
 ### Minor Changes
