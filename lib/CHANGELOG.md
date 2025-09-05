@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.5.3
+
+### Patch Changes
+
+- 38fcd5e: Enable debugging
+
 ## 0.5.2
 
 ### Patch Changes
