@@ -106,6 +106,7 @@ export const resolvePackageJSONConflicts = async () => {
         preferValid: true,
       },
     },
+    includeNonConflicted: true,
   });
 };
 /* v8 ignore stop */
