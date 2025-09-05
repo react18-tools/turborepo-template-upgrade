@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.5.4
+
+### Patch Changes
+
+- 5bca065: Fix: handle path separator in windows
+
 ## 0.5.3
 
 ### Patch Changes
