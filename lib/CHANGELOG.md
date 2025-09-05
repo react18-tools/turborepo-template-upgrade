@@ -1,5 +1,15 @@
 # turborepo-template-upgrade
 
+## 0.5.5
+
+### Patch Changes
+
+- 6176009: Improve template upgrade exclusions and workflow handling
+  - Add more comprehensive file exclusions (.tkb, FUNDING.md, docs workflow)
+  - Exclude optional template files when not present (button components, docs config)
+  - Clean up workflow files to prevent template commit tracking
+  - Improve upgrade success messaging
+
 ## 0.5.4
 
 ### Patch Changes
