@@ -1,8 +1,8 @@
 import { existsSync, readFileSync } from "fs";
 import { execSync } from "child_process";
 import { resolve } from "path";
-import { InbuiltMergeStrategies, resolveConflicts, StrategyStatus } from "git-json-resolver";
-import { DROP } from "git-json-resolver/utils";
+import { InbuiltMergeStrategies, resolveConflicts } from "git-json-resolver";
+import { DROP, StrategyStatus_OK } from "git-json-resolver/utils";
 
 export const cdToRepoRoot = () => {
   let cwd = process.cwd();
@@ -59,8 +59,6 @@ export const resolvePackageJSONConflicts = async () => {
   const typeDocExists = existsSync("typedoc.config.js");
   const plopExists = existsSync("scripts/templates");
 
-  console.log({ cwd: process.cwd() });
-
   await resolveConflicts<InbuiltMergeStrategies | "ignore-removed">({
     include: ["package.json"],
     defaultStrategy: ["merge", "ours"],
@@ -76,22 +74,23 @@ export const resolvePackageJSONConflicts = async () => {
           (!plopExists && /plop/.test(path))
         ) {
           return {
-            status: StrategyStatus.OK,
+            status: StrategyStatus_OK,
             value: DROP,
           };
         }
 
         return {
-          status: StrategyStatus.OK,
+          status: StrategyStatus_OK,
           value: theirs,
         };
       },
     },
+    debug: true,
   });
 
   await resolveConflicts({
     include: ["**/package.json"],
-    exclude: ["package.json", "**/dist/**"],
+    exclude: ["package.json", "**/dist/**", "**/.next/**"],
     defaultStrategy: ["merge", "ours"],
     rules: {
       "devDependencies.*": ["merge", "semver-max"],
@@ -107,6 +106,7 @@ export const resolvePackageJSONConflicts = async () => {
       },
     },
     includeNonConflicted: true,
+    debug: true,
   });
 };
 /* v8 ignore stop */
