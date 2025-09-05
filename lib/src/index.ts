@@ -77,9 +77,11 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
 
     // Build exclusion list
     const exclusions = [
+      ".tkb",
       "CHANGELOG.md",
       "README.md",
       "**/CHANGELOG.md",
+      "**/FUNDING.md",
       "SECURITY.md",
       "TODO.md",
       "FEATURED.md",
@@ -93,16 +95,26 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
     ].map(entry => `:!${entry}`);
 
     [
+      ".github/workflows/docs.yml",
       "scripts/templates",
       "examples/express",
+      "examples/nextjs/src/app/button.tsx",
+      "examples/nextjs/src/app/button.module.css",
       "examples/remix",
       "packages/logger",
       "packages/jest-presets",
       "scripts/rebrand.js",
       "scripts/rebrander.js",
+      "plopfile.js",
+      "tsconfig.docs.json",
+      "typedoc.config.js",
     ].forEach(dir => {
       if (!existsSync(resolve(cwd, dir))) exclusions.push(`:!${dir}`);
     });
+
+    if (!execSync("scripts/templates")) {
+      exclusions.push(`:!component-generator.md`);
+    }
 
     // 7. Generate patch
     createAndApplyPatch(baseCommit, exclusions);
@@ -115,11 +127,14 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
 
     await resolvePackageJSONConflicts();
 
-    console.log("✅ Upgrade applied successfully. Check .template.patch for details.");
+    console.log("✅ Upgrade applied successfully.");
 
     console.log("Reinstalling dependencies...");
 
     execSync("pnpm i", { stdio: "inherit" });
+    // Ensure template last commit is not being updated in workflows
+    execSync("sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/upgrade.yml");
+    execSync("sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/docs.yml");
   } catch (err) {
     console.error("❌ Upgrade failed:", err);
   }
