@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.5.2
+
+### Patch Changes
+
+- d7fd6aa: Handle Non conflicted to ensure proper package.json
+
 ## 0.5.1
 
 ### Patch Changes
