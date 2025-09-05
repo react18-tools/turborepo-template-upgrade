@@ -112,7 +112,7 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
       if (!existsSync(resolve(cwd, dir))) exclusions.push(`:!${dir}`);
     });
 
-    if (!execSync("scripts/templates")) {
+    if (!existsSync("scripts/templates")) {
       exclusions.push(`:!component-generator.md`);
     }
 
