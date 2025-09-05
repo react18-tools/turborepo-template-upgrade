@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.5.6
+
+### Patch Changes
+
+- a5f22db: Fix build error due to typo.
+
 ## 0.5.5
 
 ### Patch Changes
