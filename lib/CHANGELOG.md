@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.6.1
+
+### Patch Changes
+
+- a1fbe9d: fix: add cli changes
+
 ## 0.6.0
 
 ### Minor Changes
