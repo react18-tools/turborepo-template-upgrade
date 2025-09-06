@@ -6,16 +6,6 @@
 
 **Seamlessly keep your repo in sync with [turborepo-template](https://github.com/react18-tools/turborepo-template).**
 
-## <<<<<<< ours
-
-=======
-
-> Now it is super easy to use this template. Just run `pnpm create r18` and provide your project name. That's it, we will automatically load the template and initiate rebranding.
-
-> Exciting news! We've launched a new course to help you master this template: [Craft Next Gen UI Libraries for React 18 and Next.js 14](https://www.udemy.com/course/craft-next-gen-ui-libraries-for-react-18-and-nextjs-14/?referralCode=46B8C7845ECCEA99E0EF)
->
-> > > > > > > theirs
-
 ## 🚀 Purpose
 
 `turborepo-template-upgrade` is a small utility built for repositories that were bootstrapped using [react18-tools/turborepo-template](https://github.com/react18-tools/turborepo-template).
@@ -50,6 +40,34 @@ npx turborepo-template-upgrade
 
 > <img src="https://raw.githubusercontent.com/mayank1513/mayank1513/main/popper.png" style="height: 40px"/> We just released a shorthand -- pnpx tt-upgrade
 
+### CLI Options
+
+```bash
+# Basic usage with debug logging
+npx turborepo-template-upgrade --debug
+
+# Preview changes without applying
+npx turborepo-template-upgrade --dry-run
+
+# Skip dependency installation
+npx turborepo-template-upgrade --skip-install
+
+# Exclude specific paths
+npx turborepo-template-upgrade --exclude "docs,examples"
+```
+
+**Available Options:**
+
+- `--debug` / `-d` - Enable detailed logging
+- `--dry-run` - Preview changes without applying
+- `--template-url <url>` - Custom template repository URL
+- `--exclude <paths>` - Comma-separated paths to exclude
+- `--skip-install` - Skip dependency reinstallation
+- `--remote-name <name>` - Custom git remote name
+- `--max-retries <num>` - Maximum patch retry attempts
+- `--skip-clean-check` - Skip git tree clean validation
+- `--help` / `-h` - Show help message
+
 This will:
 
 1. Fetch the latest changes from the template repo.
@@ -62,29 +80,42 @@ If there are remaining conflicts, you’ll see them in `.template.patch`.
 
 ---
 
-## 🧩 Conflict Resolution
+## 🔧 Configuration
 
-<<<<<<< ours
+Create `.tt-upgrade.config.json` in your repo root for persistent settings:
+
+```json
+{
+  "debug": false,
+  "skipInstall": true,
+  "excludePaths": ["docs", "examples"],
+  "templateUrl": "https://github.com/custom/template",
+  "remoteName": "upstream",
+  "maxPatchRetries": 5
+}
+```
+
+CLI options override config file settings.
+
+---
+
+## 🧩 Conflict Resolution
 
 - **`package.json`** merges are handled automatically:
   - Keeps your dependencies.
   - Brings in template upgrades.
-  - # Deduplicates versions.
-    > You can also start by running `pnpm dlx create-turbo@latest --example https://github.com/react18-tools/turborepo-template/` in command line interface.
-
-## What's Different from Turborepo official templates?
-
-> > > > > > > theirs
-
+  - Deduplicates versions.
 - For other files, standard `git apply --3way` conflict markers may appear.
 
 ---
 
-## 🔍 Example Workflow
+## 🔍 Example Workflows
+
+### Basic Upgrade
 
 ```bash
-# 1. Upgrade
-npx turborepo-template-upgrade
+# 1. Upgrade with debug logging
+npx turborepo-template-upgrade --debug
 
 # 2. Review conflicts (if any)
 git status
@@ -93,6 +124,23 @@ cat .template.patch
 # 3. Commit changes
 git add .
 git commit -m "chore: upgrade template"
+```
+
+### Preview Mode
+
+```bash
+# Preview what would change
+npx turborepo-template-upgrade --dry-run
+
+# Apply if satisfied
+npx turborepo-template-upgrade
+```
+
+### Custom Configuration
+
+```bash
+# Skip installation and exclude docs
+npx turborepo-template-upgrade --skip-install --exclude "docs,examples"
 ```
 
 ---
