@@ -112,9 +112,16 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
       if (!existsSync(resolve(cwd, dir))) exclusions.push(`:!${dir}`);
     });
 
-    if (!existsSync("scripts/templates")) {
-      exclusions.push(`:!component-generator.md`);
-    }
+    const conditionalExcludes: [string, string[]][] = [
+      ["scripts/templates", ["component-generator.md"]],
+      ["docs", ["_config.yml", "scripts/add-frontmatter.mjs"]],
+    ];
+
+    conditionalExcludes.forEach(([fileToTest, toExclude]) => {
+      if (!existsSync(fileToTest)) {
+        toExclude.forEach(f => exclusions.push(`:!${f}`));
+      }
+    });
 
     // 7. Generate patch
     createAndApplyPatch(baseCommit, exclusions);
@@ -133,8 +140,12 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
 
     execSync("pnpm i", { stdio: "inherit" });
     // Ensure template last commit is not being updated in workflows
-    execSync("sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/upgrade.yml");
-    execSync("sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/docs.yml");
+    try {
+      execSync("sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/upgrade.yml");
+      execSync("sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/docs.yml");
+    } catch {
+      // ignore if not found
+    }
   } catch (err) {
     console.error("❌ Upgrade failed:", err);
   }
