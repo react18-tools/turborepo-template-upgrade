@@ -1,5 +1,12 @@
 # @repo/shared
 
+## 0.0.37
+
+### Patch Changes
+
+- Updated dependencies [6f0240b]
+  - turborepo-template-upgrade@0.5.10
+
 ## 0.0.36
 
 ### Patch Changes

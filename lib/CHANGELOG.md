@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.5.10
+
+### Patch Changes
+
+- 6f0240b: Fix semever plugin and reduce logging.
+
 ## 0.5.9
 
 ### Patch Changes
