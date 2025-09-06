@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.5.8
+
+### Patch Changes
+
+- ef48e8e: Fix: exclusion of file starting with \_ breaks diff
+
 ## 0.5.7
 
 ### Patch Changes
