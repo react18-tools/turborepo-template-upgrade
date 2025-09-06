@@ -1,5 +1,22 @@
 # turborepo-template-upgrade
 
+## 0.6.0
+
+### Minor Changes
+
+- Enhanced CLI with comprehensive configuration options and debug support
+  - Added `--debug` flag for detailed logging throughout upgrade process
+  - Added `--dry-run` mode to preview changes without applying them
+  - Added `--skip-install` to skip dependency reinstallation
+  - Added `--remote-name` for custom git remote names
+  - Added `--max-retries` for configurable patch retry attempts
+  - Added `--skip-clean-check` to bypass git tree validation
+  - Added `--exclude` for comma-separated exclusion paths
+  - Added `.tt-upgrade.config.json` support for persistent configuration
+  - CLI options now override config file settings with proper merging
+  - Improved error handling and logging with debug mode
+  - Enhanced patch application with configurable retry logic
+
 ## 0.5.10
 
 ### Patch Changes

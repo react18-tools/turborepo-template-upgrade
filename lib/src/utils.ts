@@ -54,7 +54,7 @@ export const getBaseCommit = () => {
 };
 
 /* v8 ignore start */
-export const resolvePackageJSONConflicts = async () => {
+export const resolvePackageJSONConflicts = async (debug: boolean) => {
   const rebrandExists = existsSync("scripts/rebrand.js");
   const typeDocExists = existsSync("typedoc.config.js");
   const plopExists = existsSync("scripts/templates");
@@ -85,6 +85,7 @@ export const resolvePackageJSONConflicts = async () => {
         };
       },
     },
+    debug,
   });
 
   await resolveConflicts({
@@ -106,6 +107,7 @@ export const resolvePackageJSONConflicts = async () => {
       },
     },
     includeNonConflicted: true,
+    debug,
   });
 };
 /* v8 ignore stop */
