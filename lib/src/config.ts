@@ -23,10 +23,10 @@ export interface UpgradeConfig {
 }
 
 /**
- * Load configuration from .turborepo-template.config.json if it exists
+ * Load configuration from .tt-upgrade.config.json if it exists
  */
 export const loadConfig = (cwd: string): UpgradeConfig => {
-  const configPath = resolve(cwd, ".turborepo-template.config.json");
+  const configPath = resolve(cwd, ".tt-upgrade.config.json");
 
   if (!existsSync(configPath)) {
     return {};

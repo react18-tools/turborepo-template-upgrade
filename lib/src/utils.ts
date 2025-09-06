@@ -21,7 +21,7 @@ const LAST_COMMIT_FILE = ".turborepo-template.lst";
 export const getBaseCommit = () => {
   // 1. If already tracked, prefer that
   if (existsSync(LAST_COMMIT_FILE)) {
-    return readFileSync(LAST_COMMIT_FILE, "utf8").trim();
+    return readFileSync(LAST_COMMIT_FILE, "utf8")?.trim();
   }
 
   // 2. Get first commit date of current repo
@@ -37,7 +37,7 @@ export const getBaseCommit = () => {
     .split("\n")
     .map(line => {
       const [hash, dateStr] = line.split("::");
-      return { hash, date: new Date(dateStr.trim()) };
+      return { hash, date: new Date(dateStr?.trim()) };
     })
     .reverse();
 

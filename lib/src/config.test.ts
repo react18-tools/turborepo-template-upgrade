@@ -5,7 +5,7 @@ import { loadConfig, mergeConfig } from "./config";
 
 describe("config", () => {
   const testDir = process.cwd();
-  const configPath = resolve(testDir, ".turborepo-template.config.json");
+  const configPath = resolve(testDir, ".tt-upgrade.config.json");
   
   beforeEach(() => {
     // Clean up any existing config file

@@ -4,7 +4,7 @@ import { loadConfig, mergeConfig } from "./config";
 import lstCommit from "../../.turborepo-template.lst?raw";
 import { getBaseCommit } from "./utils";
 import { execSync } from "child_process";
-import { writeFileSync, unlinkSync, existsSync } from "fs";
+import { writeFileSync, unlinkSync, existsSync, readFileSync } from "fs";
 
 // Mock execSync to prevent actual git operations in tests
 vi.mock("child_process", () => ({
@@ -92,7 +92,7 @@ describe("upgrade", () => {
 });
 
 describe("config", () => {
-  const configPath = ".turborepo-template.config.json";
+  const configPath = ".tt-upgrade.config.json";
   
   beforeEach(() => {
     // Clean up any existing config file
