@@ -85,7 +85,6 @@ export const resolvePackageJSONConflicts = async () => {
         };
       },
     },
-    debug: true,
   });
 
   await resolveConflicts({
@@ -98,6 +97,7 @@ export const resolvePackageJSONConflicts = async () => {
     },
     loggerConfig: {
       logDir: ".logs2",
+      levels: { stdout: [] },
     },
     plugins: ["git-json-resolver-semver"],
     pluginConfig: {
@@ -106,7 +106,6 @@ export const resolvePackageJSONConflicts = async () => {
       },
     },
     includeNonConflicted: true,
-    debug: true,
   });
 };
 /* v8 ignore stop */

@@ -89,6 +89,6 @@
   ],
   "dependencies": {
     "git-json-resolver": "^1.3.5",
-    "git-json-resolver-semver": "^0.0.2"
+    "git-json-resolver-semver": "^1.0.0"
   }
 }
