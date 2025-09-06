@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.5.9
+
+### Patch Changes
+
+- 08dceea: Improve logging and edgecases in matching scopped packages
+
 ## 0.5.8
 
 ### Patch Changes
