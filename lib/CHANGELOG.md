@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.5.7
+
+### Patch Changes
+
+- 8601044: Update exclusions and logging
+
 ## 0.5.6
 
 ### Patch Changes

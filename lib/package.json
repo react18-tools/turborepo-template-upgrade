@@ -2,7 +2,7 @@
   "name": "turborepo-template-upgrade",
   "author": "Mayank Kumar Chaudhari (https://mayank-chaudhari.vercel.app)",
   "private": false,
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "Upgrade projects based on a Turborepo template using selective git diffs, with support for ignore paths and skipped packages.",
   "license": "MPL-2.0",
   "main": "./dist/index.js",
@@ -88,7 +88,7 @@
     "mayank1513"
   ],
   "dependencies": {
-    "git-json-resolver": "^1.3.2",
+    "git-json-resolver": "^1.3.3",
     "git-json-resolver-semver": "^0.0.1"
   }
 }
