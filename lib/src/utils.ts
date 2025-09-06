@@ -93,8 +93,8 @@ export const resolvePackageJSONConflicts = async () => {
     exclude: ["package.json", "**/dist/**", "**/.next/**"],
     defaultStrategy: ["merge", "ours"],
     rules: {
-      "devDependencies.*": ["merge", "semver-max"],
-      "dependencies.*": ["merge", "semver-max"],
+      "devDependencies.*": ["semver-max"],
+      "dependencies.*": ["semver-max"],
     },
     loggerConfig: {
       logDir: ".logs2",

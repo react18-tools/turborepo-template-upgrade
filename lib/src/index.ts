@@ -2,6 +2,7 @@ import { execSync } from "child_process";
 import { writeFileSync, existsSync } from "fs";
 import { resolve } from "path";
 import { cdToRepoRoot, getBaseCommit, resolvePackageJSONConflicts } from "./utils";
+import { DEFAULT_BACKUP_DIR } from "git-json-resolver/utils";
 
 const errorLogs: unknown[] = [];
 
@@ -68,6 +69,11 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
   } catch {
     // ignore if already added
   }
+
+  // Delete backup dir
+  try {
+    execSync(`rm -rf ${DEFAULT_BACKUP_DIR}`);
+  } catch {}
 
   try {
     execSync("git fetch template");
