@@ -114,7 +114,7 @@ export const upgradeTemplate = async (lastTemplateRepoCommit?: string) => {
 
     const conditionalExcludes: [string, string[]][] = [
       ["scripts/templates", ["component-generator.md"]],
-      ["docs", ["_config.yml", "scripts/add-frontmatter.mjs"]],
+      ["docs", ["scripts/add-frontmatter.mjs"]],
     ];
 
     conditionalExcludes.forEach(([fileToTest, toExclude]) => {
