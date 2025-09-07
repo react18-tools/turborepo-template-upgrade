@@ -3,12 +3,13 @@ import { upgradeTemplate } from ".";
 import { loadConfig, mergeConfig } from "./config";
 import lstCommit from "../../.turborepo-template.lst?raw";
 import { getBaseCommit } from "./utils";
-import { execSync } from "child_process";
+import { execSync, execFileSync } from "child_process";
 import { writeFileSync, unlinkSync, existsSync, readFileSync } from "fs";
 
-// Mock execSync to prevent actual git operations in tests
+// Mock child_process to prevent actual git operations in tests
 vi.mock("child_process", () => ({
-  execSync: vi.fn(() => "mock-output")
+  execSync: vi.fn(() => "mock-output"),
+  execFileSync: vi.fn(() => "mock-output")
 }));
 
 vi.mock("./utils", () => ({
@@ -24,7 +25,9 @@ describe("upgrade", () => {
 
   test("should work with default options", async ({ expect }) => {
     const mockExecSync = vi.mocked(execSync);
+    const mockExecFileSync = vi.mocked(execFileSync);
     mockExecSync.mockReturnValue("mock-commit-hash");
+    mockExecFileSync.mockReturnValue("mock-commit-hash");
     
     await upgradeTemplate();
     expect(mockExecSync).toHaveBeenCalled();
@@ -51,13 +54,14 @@ describe("upgrade", () => {
   });
 
   test("should support custom template URL", async ({ expect }) => {
-    const mockExecSync = vi.mocked(execSync);
+    const mockExecFileSync = vi.mocked(execFileSync);
     const customUrl = "https://github.com/custom/template";
     
     await upgradeTemplate(undefined, { templateUrl: customUrl });
     
-    expect(mockExecSync).toHaveBeenCalledWith(
-      expect.stringContaining(`git remote add template ${customUrl}`)
+    expect(mockExecFileSync).toHaveBeenCalledWith(
+      "git",
+      ["remote", "add", "template", customUrl]
     );
   });
 

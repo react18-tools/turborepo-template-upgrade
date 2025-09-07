@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
 import { writeFileSync, existsSync } from "fs";
 import { resolve } from "path";
 import { cdToRepoRoot, getBaseCommit, resolvePackageJSONConflicts } from "./utils";
@@ -7,7 +7,40 @@ import { loadConfig, mergeConfig, type UpgradeConfig } from "./config";
 
 const errorLogs: unknown[] = [];
 
-let patchRecurseCount = 0;
+const DEFAULT_EXCLUSIONS = [
+  ".tkb",
+  "CHANGELOG.md",
+  "README.md",
+  "**/CHANGELOG.md",
+  "**/FUNDING.md",
+  "SECURITY.md",
+  "TODO.md",
+  "FEATURED.md",
+  "docs",
+  "lib",
+  "scripts/rebrand.config.json",
+  "pnpm-lock.yaml",
+  ".lst",
+  ".turborepo-template.lst",
+  ".vscode/settings.json",
+];
+
+const CONDITIONAL_EXCLUSION_PATHS = [
+  ".github/workflows/docs.yml",
+  "scripts/templates",
+  "examples/express",
+  "examples/nextjs/src/app/button.tsx",
+  "examples/nextjs/src/app/button.module.css",
+  "examples/remix",
+  "packages/logger",
+  "packages/jest-presets",
+  "scripts/rebrand.js",
+  "scripts/rebrander.js",
+  "plopfile.js",
+  "tsconfig.docs.json",
+  "typedoc.config.js",
+];
+
 /**
  * Create and apply patch
  */
@@ -17,16 +50,24 @@ const createAndApplyPatch = (
   log: (msg: string) => void,
   remoteName = "template",
   maxRetries = 3,
+  patchRecurseCount = 0,
 ) => {
-  if (patchRecurseCount++ > maxRetries) {
-    patchRecurseCount = 0;
+  if (patchRecurseCount > maxRetries) {
     log(`Max patch recursion reached (${maxRetries}), stopping`);
     return;
   }
 
-  const diffCmd = `git diff ${baseCommit} ${remoteName}/main -- ${exclusions.join(" ")} .`;
+  // Sanitize inputs to prevent command injection
+  const sanitizedBaseCommit = baseCommit.replace(/[^a-zA-Z0-9]/g, "");
+  const sanitizedRemoteName = remoteName.replace(/[^a-zA-Z0-9_-]/g, "");
+
+  const diffCmd = `git diff ${sanitizedBaseCommit} ${sanitizedRemoteName}/main -- ${exclusions.join(" ")} .`;
   log(`Running: ${diffCmd}`);
-  const patch = execSync(diffCmd, { encoding: "utf8" });
+  const patch = execFileSync(
+    "git",
+    ["diff", baseCommit, `${remoteName}/main`, "--", ...exclusions, "."],
+    { encoding: "utf8" },
+  );
   writeFileSync(".template.patch", patch);
   log(`Patch written to .template.patch (${patch.length} chars)`);
 
@@ -39,7 +80,7 @@ const createAndApplyPatch = (
     log("Patch applied successfully");
   } catch (err: any) {
     const errorLines: string[] = err.stderr
-      ?.split?.("\n")
+      ?.split("\n")
       .filter((line: string) => line.startsWith("error"));
     log(`Patch failed with ${errorLines.length} errors`);
     errorLines.forEach((line: string) => {
@@ -52,7 +93,15 @@ const createAndApplyPatch = (
     errorLogs.push("Applied patch with errors: ");
     errorLogs.push({ errorLines, exclusions });
     errorLogs.push("^^^---Applied patch with errors");
-    if (errorLines.length) createAndApplyPatch(baseCommit, exclusions, log, remoteName, maxRetries);
+    if (errorLines.length)
+      createAndApplyPatch(
+        baseCommit,
+        exclusions,
+        log,
+        remoteName,
+        maxRetries,
+        patchRecurseCount + 1,
+      );
   }
 };
 
@@ -118,7 +167,7 @@ export const upgradeTemplate = async (
 
   // Ensure template remote exists
   try {
-    execSync(`git remote add ${remoteName} ${templateUrl}`);
+    execFileSync("git", ["remote", "add", remoteName, templateUrl]);
     log(`Added ${remoteName} remote: ${templateUrl}`);
   } catch {
     log(`${remoteName} remote already exists`);
@@ -130,49 +179,17 @@ export const upgradeTemplate = async (
   } catch {}
 
   try {
-    execSync(`git fetch ${remoteName}`);
+    execFileSync("git", ["fetch", remoteName]);
     log(`Fetched latest changes from ${remoteName}`);
 
     // Determine last template commit
     const baseCommit = lastTemplateRepoCommit?.trim() || getBaseCommit();
 
     // Build exclusion list
-    const defaultExclusions = [
-      ".tkb",
-      "CHANGELOG.md",
-      "README.md",
-      "**/CHANGELOG.md",
-      "**/FUNDING.md",
-      "SECURITY.md",
-      "TODO.md",
-      "FEATURED.md",
-      "docs",
-      "lib",
-      "scripts/rebrand.config.json",
-      "pnpm-lock.yaml",
-      ".lst",
-      ".turborepo-template.lst",
-      ".vscode/settings.json",
-    ];
-
-    const exclusions = [...defaultExclusions, ...excludePaths].map(entry => `:!${entry}`);
+    const exclusions = [...DEFAULT_EXCLUSIONS, ...excludePaths].map(entry => `:!${entry}`);
     log(`Base exclusions: ${exclusions.length} items`);
 
-    [
-      ".github/workflows/docs.yml",
-      "scripts/templates",
-      "examples/express",
-      "examples/nextjs/src/app/button.tsx",
-      "examples/nextjs/src/app/button.module.css",
-      "examples/remix",
-      "packages/logger",
-      "packages/jest-presets",
-      "scripts/rebrand.js",
-      "scripts/rebrander.js",
-      "plopfile.js",
-      "tsconfig.docs.json",
-      "typedoc.config.js",
-    ].forEach(dir => {
+    CONDITIONAL_EXCLUSION_PATHS.forEach(dir => {
       if (!existsSync(resolve(cwd, dir))) {
         exclusions.push(`:!${dir}`);
         log(`Added missing path to exclusions: ${dir}`);
@@ -195,8 +212,11 @@ export const upgradeTemplate = async (
     log(`Total exclusions: ${exclusions.length}`);
 
     if (dryRun) {
-      const diffCmd = `git diff ${baseCommit} ${remoteName}/main -- ${exclusions.join(" ")} .`;
-      const patch = execSync(diffCmd, { encoding: "utf8" });
+      const patch = execFileSync(
+        "git",
+        ["diff", baseCommit, `${remoteName}/main`, "--", ...exclusions, "."],
+        { encoding: "utf8" },
+      );
       console.log("📋 Patch preview:");
       console.log(patch || "No changes to apply");
       return;
@@ -204,7 +224,7 @@ export const upgradeTemplate = async (
 
     createAndApplyPatch(baseCommit, exclusions, log, remoteName, maxPatchRetries);
 
-    const templateLatestCommit = execSync(`git rev-parse ${remoteName}/main`, {
+    const templateLatestCommit = execFileSync("git", ["rev-parse", `${remoteName}/main`], {
       encoding: "utf8",
     }).trim();
 
