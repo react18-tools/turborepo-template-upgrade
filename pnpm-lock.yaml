@@ -159,11 +159,11 @@ importers:
   lib:
     dependencies:
       git-json-resolver:
-        specifier: ^1.3.5
-        version: 1.3.5(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
+        specifier: ^1.3.6
+        version: 1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
       git-json-resolver-semver:
         specifier: ^1.0.0
-        version: 1.0.0(git-json-resolver@1.3.5(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1))
+        version: 1.0.0(git-json-resolver@1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1))
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -2524,8 +2524,8 @@ packages:
     peerDependencies:
       git-json-resolver: ^1.2.0
 
-  git-json-resolver@1.3.5:
-    resolution: {integrity: sha512-YyOC9bnYdI+Tbp6ZH95S8RXz4ulC1Coc6SQA7VBgi44gjDdAmn+yFu/mDWI7QzS4NfCH9vROS1gZ0BEIZK4F1Q==}
+  git-json-resolver@1.3.6:
+    resolution: {integrity: sha512-FpdTRMS56pxYP7DZXf6rkUl2c0GLiMEpx/NeCdzS++Z0zCwsHl5fBGvp9zyk2iA0Jmhj0sVo/8Imv4oV2U6WNA==}
     hasBin: true
     peerDependencies:
       fast-xml-parser: ^5.2.5
@@ -7128,11 +7128,11 @@ snapshots:
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
 
-  git-json-resolver-semver@1.0.0(git-json-resolver@1.3.5(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)):
+  git-json-resolver-semver@1.0.0(git-json-resolver@1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)):
     dependencies:
-      git-json-resolver: 1.3.5(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
+      git-json-resolver: 1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
 
-  git-json-resolver@1.3.5(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1):
+  git-json-resolver@1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1):
     optionalDependencies:
       json5: 2.2.3
       micromatch: 4.0.8
@@ -9257,8 +9257,8 @@ snapshots:
 
   turborepo-template-upgrade@0.6.1(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1):
     dependencies:
-      git-json-resolver: 1.3.5(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
-      git-json-resolver-semver: 1.0.0(git-json-resolver@1.3.5(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1))
+      git-json-resolver: 1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
+      git-json-resolver-semver: 1.0.0(git-json-resolver@1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1))
     transitivePeerDependencies:
       - fast-xml-parser
       - json5
