@@ -55,14 +55,15 @@ export const getBaseCommit = () => {
 
 /* v8 ignore start */
 export const resolvePackageJSONConflicts = async (debug: boolean) => {
-  const rebrandExists = existsSync("scripts/rebrand.js");
+  const rebrandExists = existsSync("scripts/rebrand.js") || existsSync("scripts/rebrand.ts");
   const typeDocExists = existsSync("typedoc.config.js");
   const plopExists = existsSync("scripts/templates");
 
   await resolveConflicts<InbuiltMergeStrategies | "ignore-removed">({
     include: ["package.json"],
-    defaultStrategy: ["merge", "ours"],
+    defaultStrategy: ["merge", "theirs"],
     rules: {
+      name: ["ours"],
       "devDependencies.*": ["ignore-removed", "theirs"],
       "dependencies.*": ["ignore-removed", "theirs"],
     },
