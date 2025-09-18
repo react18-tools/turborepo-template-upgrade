@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { upgradeTemplate, type UpgradeOptions } from ".";
+import { type UpgradeOptions, upgradeTemplate } from ".";
 
 interface CliOptions extends UpgradeOptions {
   help?: boolean;
@@ -32,10 +32,13 @@ const parseArgs = (args: string[]): CliOptions => {
         options.remoteName = args[++i];
         break;
       case "--max-retries":
-        options.maxPatchRetries = parseInt(args[++i]) || 3;
+        options.maxPatchRetries = parseInt(args[++i], 10) || 3;
         break;
       case "--skip-clean-check":
         options.skipCleanCheck = true;
+        break;
+      case "--from":
+        options.from = args[++i];
         break;
       case "--help":
       case "-h":
@@ -60,6 +63,7 @@ Options:
   --remote-name <name>    Custom remote name for template (default: template)
   --max-retries <num>     Maximum patch retry attempts (default: 3)
   --skip-clean-check      Skip git tree clean check
+  --from <ref>            Specific commit hash, tag, or branch to upgrade from
   -h, --help              Show this help message
 
 Configuration:
@@ -80,5 +84,4 @@ if (options.help) {
   process.exit(0);
 }
 
-const { help, ...upgradeOptions } = options;
-upgradeTemplate(undefined, upgradeOptions);
+upgradeTemplate(options.from, options);

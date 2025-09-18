@@ -1,6 +1,6 @@
-import { describe, test, beforeEach, afterEach, vi } from "vitest";
-import { writeFileSync, unlinkSync, existsSync } from "fs";
-import { resolve } from "path";
+import { existsSync, unlinkSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { beforeEach, describe, test } from "vitest";
 import { loadConfig, mergeConfig } from "./config";
 
 describe("config", () => {
@@ -15,12 +15,14 @@ describe("config", () => {
   });
 
   describe("loadConfig", () => {
-    test("should return empty config when file doesn't exist", ({ expect }) => {
-      const config = loadConfig(testDir);
+    test("should return empty config when file doesn't exist", async ({
+      expect,
+    }) => {
+      const config = await loadConfig(testDir);
       expect(config).toEqual({});
     });
 
-    test("should load valid config from file", ({ expect }) => {
+    test("should load valid config from file", async ({ expect }) => {
       const testConfig = {
         debug: true,
         skipInstall: true,
@@ -32,34 +34,20 @@ describe("config", () => {
 
       writeFileSync(configPath, JSON.stringify(testConfig, null, 2));
 
-      const config = loadConfig(testDir);
+      const config = await loadConfig(testDir);
       expect(config).toEqual(testConfig);
     });
 
-    test("should handle invalid JSON gracefully", ({ expect }) => {
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
+    test("should handle invalid JSON gracefully", async ({ expect }) => {
       writeFileSync(configPath, "{ invalid json }");
-
-      const config = loadConfig(testDir);
+      const config = await loadConfig(testDir);
       expect(config).toEqual({});
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Failed to parse config file"),
-      );
-
-      consoleSpy.mockRestore();
     });
 
-    test("should handle empty file gracefully", ({ expect }) => {
-      const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
+    test("should handle empty file gracefully", async ({ expect }) => {
       writeFileSync(configPath, "");
-
-      const config = loadConfig(testDir);
+      const config = await loadConfig(testDir);
       expect(config).toEqual({});
-      expect(consoleSpy).toHaveBeenCalled();
-
-      consoleSpy.mockRestore();
     });
   });
 

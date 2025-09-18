@@ -1,5 +1,5 @@
-import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vitest/config";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: true,
-    setupFiles: ["src/test-setup.ts"],
+    setupFiles: ["test-setup.ts"],
     coverage: {
       include: ["src/**"],
       exclude: ["src/**/*.test.*", "src/**/declaration.d.ts", "src/**/cli.ts"],

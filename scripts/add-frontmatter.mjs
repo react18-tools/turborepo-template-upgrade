@@ -11,8 +11,8 @@
  * Author: Mayank Chaudhari style, refactored for clarity & maintainability
  */
 
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 // Root folder where TypeDoc markdown output exists
 const DOCS_DIR = "./docs";
@@ -25,7 +25,7 @@ const DOCS_DIR = "./docs";
  * @returns {string}
  */
 function prettify(str) {
-  return str.replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  return str.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 /**
@@ -63,7 +63,7 @@ function addFrontmatter(filePath, navOrder, parent = "") {
     "",
   ].filter(Boolean);
 
-  fs.writeFileSync(filePath, fmLines.join("\n") + "\n" + content, "utf8");
+  fs.writeFileSync(filePath, `${fmLines.join("\n")}\n${content}`, "utf8");
 }
 
 /**
@@ -187,7 +187,10 @@ function processDir(dir, startOrder = 1, parent = "") {
 // flatten docs output
 // flattenDirs(DOCS_DIR);
 // fs.writeFileSync(rootMdFile, [staticPart, moduleIndex].join(ModuleTitle));
-fs.renameSync(path.resolve(DOCS_DIR, "README.md"), path.resolve(DOCS_DIR, "index.md"));
+fs.renameSync(
+  path.resolve(DOCS_DIR, "README.md"),
+  path.resolve(DOCS_DIR, "index.md"),
+);
 
 // Run script
 processDir(DOCS_DIR);

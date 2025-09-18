@@ -1,4 +1,4 @@
-import { describe, test, vi, beforeEach } from "vitest";
+import { beforeEach, describe, test, vi } from "vitest";
 
 // Mock the upgradeTemplate function
 const mockUpgradeTemplate = vi.fn();
@@ -35,7 +35,8 @@ const parseArgs = (args: string[]): ParsedOptions => {
         if (i + 1 < args.length) options.templateUrl = args[++i];
         break;
       case "--exclude":
-        if (i + 1 < args.length) options.excludePaths = args[++i]?.split(",") || [];
+        if (i + 1 < args.length)
+          options.excludePaths = args[++i]?.split(",") || [];
         break;
       case "--skip-install":
         options.skipInstall = true;
@@ -45,8 +46,9 @@ const parseArgs = (args: string[]): ParsedOptions => {
         break;
       case "--max-retries":
         if (i + 1 < args.length) {
-          const value = parseInt(args[++i]);
-          if (!isNaN(value) && value > 0) options.maxPatchRetries = value;
+          const value = parseInt(args[++i], 10);
+          if (!Number.isNaN(value) && value > 0)
+            options.maxPatchRetries = value;
         }
         break;
       case "--skip-clean-check":
@@ -77,7 +79,9 @@ describe("CLI argument parsing", () => {
 
   test("should parse template-url option", ({ expect }) => {
     const customUrl = "https://github.com/custom/template";
-    expect(parseArgs(["--template-url", customUrl])).toEqual({ templateUrl: customUrl });
+    expect(parseArgs(["--template-url", customUrl])).toEqual({
+      templateUrl: customUrl,
+    });
   });
 
   test("should parse exclude option", ({ expect }) => {
@@ -91,7 +95,9 @@ describe("CLI argument parsing", () => {
   });
 
   test("should parse remote-name option", ({ expect }) => {
-    expect(parseArgs(["--remote-name", "upstream"])).toEqual({ remoteName: "upstream" });
+    expect(parseArgs(["--remote-name", "upstream"])).toEqual({
+      remoteName: "upstream",
+    });
   });
 
   test("should parse max-retries option", ({ expect }) => {
@@ -103,7 +109,13 @@ describe("CLI argument parsing", () => {
   });
 
   test("should parse multiple options", ({ expect }) => {
-    const args = ["--debug", "--dry-run", "--exclude", "docs,examples", "--skip-install"];
+    const args = [
+      "--debug",
+      "--dry-run",
+      "--exclude",
+      "docs,examples",
+      "--skip-install",
+    ];
     expect(parseArgs(args)).toEqual({
       debug: true,
       dryRun: true,

@@ -1,7 +1,13 @@
-const { execSync } = require("child_process");
+import { execSync } from "node:child_process";
 
 // Publish canonical packages
-["@r18/upgrade", "turborepo-template-sync", "tt-upgrade"].forEach(pkg => {
+const canonicals: string[] = [
+  "@r18/upgrade",
+  "turborepo-template-sync",
+  "tt-upgrade",
+];
+
+canonicals.forEach((pkg) => {
   try {
     execSync(
       `sed -i -e "s/name.*/name\\": \\"${pkg.replace(/\//g, "\\\\/")}\\",/" lib/package.json`,
