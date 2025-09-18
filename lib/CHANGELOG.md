@@ -1,5 +1,24 @@
 # turborepo-template-upgrade
 
+## 0.6.2
+
+### Patch Changes
+
+- ea8cca6: Fix code formatting and improve package.json conflict resolution
+  - Fix trailing commas and code formatting issues
+  - Support both .js and .ts rebrand scripts detection
+  - Change default merge strategy to "theirs" for better template updates
+  - Add explicit "name" field rule to preserve project name during merges
+  - Add encoding parameter to pnpm install command
+  - Adding \n at the end for resolved package.json files (from git-json-resolver)
+
+- 0a0e6cf: Fix security vulnerabilities and improve test maintainability
+  - Fix CWE-117 log injection vulnerability in config.ts by sanitizing log output
+  - Update test mocks to include execFileSync alongside execSync for proper testing
+  - Refactor CLI tests to eliminate code duplication and improve maintainability
+  - Add proper TypeScript interfaces and error handling for CLI argument parsing
+  - Add validation for numeric inputs in CLI options
+
 ## 0.6.1
 
 ### Patch Changes
