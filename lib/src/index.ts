@@ -91,24 +91,13 @@ const createAndApplyPatch = async (
     return;
   }
 
-  // Sanitize inputs to prevent command injection
-  const sanitizedBaseCommit = sanitizeGitRef(baseCommit);
-  const sanitizedRemoteName = sanitizeRemoteName(remoteName);
-
-  const diffCmd = `git diff ${sanitizedBaseCommit} ${sanitizedRemoteName}/main -- ${exclusions.join(
+  const diffCmd = `git diff ${baseCommit} ${remoteName}/main -- ${exclusions.join(
     " ",
   )} .`;
   log(`Running: ${diffCmd}`);
   const { stdout: patch } = await execFileAsync(
     "git",
-    [
-      "diff",
-      sanitizedBaseCommit,
-      `${sanitizedRemoteName}/main`,
-      "--",
-      ...exclusions,
-      ".",
-    ],
+    ["diff", baseCommit, `${remoteName}/main`, "--", ...exclusions, "."],
     { encoding: "utf8" },
   );
   await writeFile(".template.patch", patch);
@@ -215,14 +204,22 @@ export const upgradeTemplate = async (
     console.log("🔍 Dry run mode - no changes will be applied");
   }
 
+  // Sanitize inputs to prevent command injection
+  const sanitizedRemoteName = sanitizeRemoteName(remoteName);
+
   // Ensure template remote exists
   try {
-    await execFileAsync("git", ["remote", "add", remoteName, templateUrl]);
+    await execFileAsync("git", [
+      "remote",
+      "add",
+      sanitizedRemoteName,
+      templateUrl,
+    ]);
     log(
-      `Added ${sanitizeLogInput(remoteName)} remote: ${sanitizeLogInput(templateUrl)}`,
+      `Added ${sanitizeLogInput(sanitizedRemoteName)} remote: ${sanitizeLogInput(templateUrl)}`,
     );
   } catch {
-    log(`${sanitizeLogInput(remoteName)} remote already exists`);
+    log(`${sanitizeLogInput(sanitizedRemoteName)} remote already exists`);
   }
 
   // Delete backup dir
@@ -231,14 +228,16 @@ export const upgradeTemplate = async (
   } catch {}
 
   try {
-    await execFileAsync("git", ["fetch", remoteName]);
-    log(`Fetched latest changes from ${sanitizeLogInput(remoteName)}`);
+    await execFileAsync("git", ["fetch", sanitizedRemoteName]);
+    log(`Fetched latest changes from ${sanitizeLogInput(sanitizedRemoteName)}`);
 
     // Determine last template commit
     const baseCommit =
       lastTemplateRepoCommit?.trim() ||
       options.from?.trim() ||
       (await getBaseCommit());
+
+    const sanitizedBaseCommit = sanitizeGitRef(baseCommit);
 
     if (options.from) {
       log(`Using specified reference: ${sanitizeLogInput(options.from)}`);
@@ -298,8 +297,6 @@ export const upgradeTemplate = async (
     log(`Generating patch from ${baseCommit} to template/main`);
     log(`Total exclusions: ${exclusions.length}`);
 
-    const sanitizedBaseCommit = sanitizeGitRef(baseCommit);
-    const sanitizedRemoteName = sanitizeRemoteName(remoteName);
     if (dryRun) {
       const { stdout: patch } = await execFileAsync(
         "git",
