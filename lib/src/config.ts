@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from "fs";
-import { resolve } from "path";
+import { access, readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 
 export interface UpgradeConfig {
   /** Enable debug logging */
@@ -25,18 +25,22 @@ export interface UpgradeConfig {
 /**
  * Load configuration from .tt-upgrade.config.json if it exists
  */
-export const loadConfig = (cwd: string): UpgradeConfig => {
+export const loadConfig = async (cwd: string): Promise<UpgradeConfig> => {
   const configPath = resolve(cwd, ".tt-upgrade.config.json");
 
-  if (!existsSync(configPath)) {
-    return {};
-  }
-
   try {
-    const configContent = readFileSync(configPath, "utf8");
+    await access(configPath);
+    const configContent = await readFile(configPath, "utf8");
     return JSON.parse(configContent);
   } catch (error) {
-    console.warn(`⚠️  Failed to parse config file: ${configPath}`);
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code !== "ENOENT"
+    ) {
+      console.warn(`⚠️  Failed to parse config file: ${configPath}`, error);
+    }
     return {};
   }
 };
@@ -51,6 +55,9 @@ export const mergeConfig = (
   return {
     ...fileConfig,
     ...cliOptions,
-    excludePaths: [...(fileConfig.excludePaths || []), ...(cliOptions.excludePaths || [])],
+    excludePaths: [
+      ...(fileConfig.excludePaths || []),
+      ...(cliOptions.excludePaths || []),
+    ],
   };
 };

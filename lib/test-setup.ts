@@ -1,5 +1,5 @@
+import { existsSync, unlinkSync } from "node:fs";
 import { afterAll } from "vitest";
-import { existsSync, unlinkSync } from "fs";
 
 // Files that might be created during tests and need cleanup
 const CLEANUP_FILES = [
@@ -7,18 +7,18 @@ const CLEANUP_FILES = [
   ".template.patch",
   ".error.log",
   ".turborepo-template.config.json",
-  ".tt-upgrade.config.json"
+  ".tt-upgrade.config.json",
 ];
 
 // Global cleanup after all tests
 afterAll(() => {
-  CLEANUP_FILES.forEach(file => {
+  CLEANUP_FILES.forEach((file) => {
     try {
       if (existsSync(file)) {
         unlinkSync(file);
         console.log(`Cleaned up: ${file}`);
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore cleanup errors
     }
   });

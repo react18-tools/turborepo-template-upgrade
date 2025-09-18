@@ -1,9 +1,18 @@
-import { execFileSync, execSync } from "child_process";
-import { writeFileSync, existsSync } from "fs";
-import { resolve } from "path";
-import { cdToRepoRoot, getBaseCommit, resolvePackageJSONConflicts } from "./utils";
+import { exec, execFile } from "node:child_process";
+import { access, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
+const execAsync = promisify(exec);
+
 import { DEFAULT_BACKUP_DIR } from "git-json-resolver/utils";
 import { loadConfig, mergeConfig, type UpgradeConfig } from "./config";
+import {
+  cdToRepoRoot,
+  getBaseCommit,
+  resolvePackageJSONConflicts,
+} from "./utils";
 
 const errorLogs: unknown[] = [];
 
@@ -25,7 +34,7 @@ const DEFAULT_EXCLUSIONS = [
   ".vscode/settings.json",
 ];
 
-const CONDITIONAL_EXCLUSION_PATHS = [
+const EXCLUDE_IF_MISSING = [
   ".github/workflows/docs.yml",
   "scripts/templates",
   "examples/express",
@@ -34,23 +43,42 @@ const CONDITIONAL_EXCLUSION_PATHS = [
   "examples/remix",
   "packages/logger",
   "packages/jest-presets",
-  "scripts/rebrand.js",
-  "scripts/rebrander.js",
-  "plopfile.js",
   "tsconfig.docs.json",
   "typedoc.config.js",
+];
+
+const EXCLUDE_IF_TEST_FILE_MISSING: [string, string[]][] = [
+  [
+    "scripts/templates",
+    [
+      "component-generator.md",
+      "plopfile.js",
+      "scripts/rc.ts",
+      "scripts/hook.ts",
+    ],
+  ],
+  [
+    "docs",
+    [
+      "scripts/add-frontmatter.mjs",
+      "scripts/add-frontmatter.ts",
+      "scripts/doc.js",
+      "scripts/doc.ts",
+    ],
+  ],
+  ["scripts/lite.js", ["scripts/lite.js", "scripts/lite.ts"]],
 ];
 
 /**
  * Create and apply patch
  */
-const createAndApplyPatch = (
+const createAndApplyPatch = async (
   baseCommit: string,
   exclusions: string[],
   log: (msg: string) => void,
   remoteName = "template",
   maxRetries = 3,
-  patchRecurseCount = 0
+  patchRecurseCount = 0,
 ) => {
   if (patchRecurseCount > maxRetries) {
     log(`Max patch recursion reached (${maxRetries}), stopping`);
@@ -62,24 +90,26 @@ const createAndApplyPatch = (
   const sanitizedRemoteName = remoteName.replace(/[^a-zA-Z0-9_-]/g, "");
 
   const diffCmd = `git diff ${sanitizedBaseCommit} ${sanitizedRemoteName}/main -- ${exclusions.join(
-    " "
+    " ",
   )} .`;
   log(`Running: ${diffCmd}`);
-  const patch = execFileSync(
+  const { stdout: patch } = await execFileAsync(
     "git",
     ["diff", baseCommit, `${remoteName}/main`, "--", ...exclusions, "."],
-    { encoding: "utf8" }
+    { encoding: "utf8" },
   );
-  writeFileSync(".template.patch", patch);
+  await writeFile(".template.patch", patch);
   log(`Patch written to .template.patch (${patch.length} chars)`);
 
   // 8. Apply patch
   try {
     log("Applying patch with 3-way merge");
-    execSync("git apply --3way --ignore-space-change --ignore-whitespace .template.patch", {
-      encoding: "utf8",
-    });
+    await execAsync(
+      "git apply --3way --ignore-space-change --ignore-whitespace .template.patch",
+      { encoding: "utf8" },
+    );
     log("Patch applied successfully");
+    // biome-ignore lint/suspicious/noExplicitAny: Error as any
   } catch (err: any) {
     const errorLines: string[] = err.stderr
       ?.split("\n")
@@ -96,13 +126,13 @@ const createAndApplyPatch = (
     errorLogs.push({ errorLines, exclusions });
     errorLogs.push("^^^---Applied patch with errors");
     if (errorLines.length)
-      createAndApplyPatch(
+      await createAndApplyPatch(
         baseCommit,
         exclusions,
         log,
         remoteName,
         maxRetries,
-        patchRecurseCount + 1
+        patchRecurseCount + 1,
       );
   }
 };
@@ -125,10 +155,10 @@ export type { UpgradeConfig as UpgradeOptions } from "./config";
  */
 export const upgradeTemplate = async (
   lastTemplateRepoCommit?: string,
-  cliOptions: UpgradeConfig = {}
+  cliOptions: UpgradeConfig = {},
 ) => {
-  const cwd = cdToRepoRoot();
-  const fileConfig = loadConfig(cwd);
+  const cwd = await cdToRepoRoot();
+  const fileConfig = await loadConfig(cwd);
   const options = mergeConfig(fileConfig, cliOptions);
 
   const {
@@ -142,7 +172,8 @@ export const upgradeTemplate = async (
     skipCleanCheck = false,
   } = options;
 
-  const log = (message: string) => debug && console.log(`🔍 [DEBUG] ${message}`);
+  const log = (message: string) =>
+    debug && console.log(`🔍 [DEBUG] ${message}`);
 
   log(`Working directory: ${cwd}`);
   if (Object.keys(fileConfig).length > 0) {
@@ -152,11 +183,15 @@ export const upgradeTemplate = async (
   // Ensure git tree is clean
   if (!skipCleanCheck) {
     try {
-      execSync("git diff --quiet");
-      execSync("git diff --cached --quiet");
+      await Promise.all([
+        execAsync("git diff --quiet"),
+        execAsync("git diff --cached --quiet"),
+      ]);
       log("Git tree is clean");
     } catch {
-      console.error("❌ Error: Please commit or stash your changes before upgrading.");
+      console.error(
+        "❌ Error: Please commit or stash your changes before upgrading.",
+      );
       return;
     }
   } else {
@@ -169,7 +204,7 @@ export const upgradeTemplate = async (
 
   // Ensure template remote exists
   try {
-    execFileSync("git", ["remote", "add", remoteName, templateUrl]);
+    await execFileAsync("git", ["remote", "add", remoteName, templateUrl]);
     log(`Added ${remoteName} remote: ${templateUrl}`);
   } catch {
     log(`${remoteName} remote already exists`);
@@ -177,60 +212,97 @@ export const upgradeTemplate = async (
 
   // Delete backup dir
   try {
-    execSync(`rm -rf ${DEFAULT_BACKUP_DIR}`);
+    await execAsync(`rm -rf ${DEFAULT_BACKUP_DIR}`);
   } catch {}
 
   try {
-    execFileSync("git", ["fetch", remoteName]);
+    await execFileAsync("git", ["fetch", remoteName]);
     log(`Fetched latest changes from ${remoteName}`);
 
     // Determine last template commit
-    const baseCommit = lastTemplateRepoCommit?.trim() || getBaseCommit();
+    const baseCommit =
+      lastTemplateRepoCommit?.trim() || (await getBaseCommit());
 
     // Build exclusion list
-    const exclusions = [...DEFAULT_EXCLUSIONS, ...excludePaths].map(entry => `:!${entry}`);
+    const exclusions = [...DEFAULT_EXCLUSIONS, ...excludePaths].map(
+      (entry) => `:!${entry}`,
+    );
     log(`Base exclusions: ${exclusions.length} items`);
 
-    CONDITIONAL_EXCLUSION_PATHS.forEach(dir => {
-      if (!existsSync(resolve(cwd, dir))) {
-        exclusions.push(`:!${dir}`);
-        log(`Added missing path to exclusions: ${dir}`);
+    // Check file existence asynchronously
+    const checkFileExists = async (path: string) => {
+      try {
+        await access(resolve(cwd, path));
+        return true;
+      } catch {
+        return false;
       }
+    };
+
+    const missingDirs = await Promise.all(
+      EXCLUDE_IF_MISSING.map(async (dir) =>
+        (await checkFileExists(dir)) ? null : dir,
+      ),
+    ).then((results) => results.filter(Boolean));
+
+    missingDirs.forEach((dir) => {
+      exclusions.push(`:!${dir}`);
+      log(`Added missing path to exclusions: ${dir}`);
     });
 
-    const conditionalExcludes: [string, string[]][] = [
-      ["scripts/templates", ["component-generator.md"]],
-      ["docs", ["scripts/add-frontmatter.mjs"]],
-    ];
+    const missingTestFiles = await Promise.all(
+      EXCLUDE_IF_TEST_FILE_MISSING.map(async ([fileToTest, toExclude]) =>
+        (await checkFileExists(fileToTest)) ? [] : toExclude,
+      ),
+    ).then((results) => results.flat());
 
-    conditionalExcludes.forEach(([fileToTest, toExclude]) => {
-      if (!existsSync(fileToTest)) {
-        toExclude.forEach(f => exclusions.push(`:!${f}`));
-      }
+    missingTestFiles.forEach((f) => {
+      exclusions.push(`:!${f}`);
     });
 
+    const [rebrandJsExists, rebrandTsExists] = await Promise.all([
+      checkFileExists("scripts/rebrand.js"),
+      checkFileExists("scripts/rebrand.ts"),
+    ]);
+
+    if (!rebrandJsExists && !rebrandTsExists) {
+      exclusions.push(
+        `:!scripts/rebrander.js`,
+        `:!scripts/rebrander.ts`,
+        `:!scripts/rebrand.js`,
+        `:!scripts/rebrand.ts`,
+      );
+    }
     // 7. Generate patch
     log(`Generating patch from ${baseCommit} to template/main`);
     log(`Total exclusions: ${exclusions.length}`);
 
     if (dryRun) {
-      const patch = execFileSync(
+      const { stdout: patch } = await execFileAsync(
         "git",
         ["diff", baseCommit, `${remoteName}/main`, "--", ...exclusions, "."],
-        { encoding: "utf8" }
+        { encoding: "utf8" },
       );
       console.log("📋 Patch preview:");
       console.log(patch || "No changes to apply");
       return;
     }
 
-    createAndApplyPatch(baseCommit, exclusions, log, remoteName, maxPatchRetries);
+    await createAndApplyPatch(
+      baseCommit,
+      exclusions,
+      log,
+      remoteName,
+      maxPatchRetries,
+    );
 
-    const templateLatestCommit = execFileSync("git", ["rev-parse", `${remoteName}/main`], {
-      encoding: "utf8",
-    }).trim();
+    const { stdout: templateLatestCommit } = await execFileAsync(
+      "git",
+      ["rev-parse", `${remoteName}/main`],
+      { encoding: "utf8" },
+    );
 
-    writeFileSync(".turborepo-template.lst", templateLatestCommit);
+    await writeFile(".turborepo-template.lst", templateLatestCommit.trim());
 
     await resolvePackageJSONConflicts(debug);
 
@@ -238,15 +310,21 @@ export const upgradeTemplate = async (
 
     if (!dryRun && !skipInstall) {
       console.log("Reinstalling dependencies...");
-      execSync("pnpm i", { stdio: debug ? "inherit" : "pipe", encoding: "utf8" });
+      await execAsync("pnpm i", { encoding: "utf8" });
       log("Dependencies reinstalled");
     } else if (skipInstall) {
       log("Skipping dependency installation");
     }
     // Ensure template last commit is not being updated in workflows
     try {
-      execSync("sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/upgrade.yml");
-      execSync("sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/docs.yml");
+      await Promise.all([
+        execAsync(
+          "sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/upgrade.yml",
+        ),
+        execAsync(
+          "sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/docs.yml",
+        ),
+      ]);
     } catch {
       // ignore if not found
     }
@@ -255,7 +333,7 @@ export const upgradeTemplate = async (
   }
 
   if (errorLogs.length > 0) {
-    writeFileSync(".error.log", JSON.stringify(errorLogs, null, 2));
+    await writeFile(".error.log", JSON.stringify(errorLogs, null, 2));
     log(`Error log written with ${errorLogs.length} entries`);
   }
 };

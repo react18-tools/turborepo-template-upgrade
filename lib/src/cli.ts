@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { upgradeTemplate, type UpgradeOptions } from ".";
+import { type UpgradeOptions, upgradeTemplate } from ".";
 
 interface CliOptions extends UpgradeOptions {
   help?: boolean;
@@ -7,43 +7,43 @@ interface CliOptions extends UpgradeOptions {
 
 const parseArgs = (args: string[]): CliOptions => {
   const options: CliOptions = {};
-  
+
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    
+
     switch (arg) {
-      case '--debug':
-      case '-d':
+      case "--debug":
+      case "-d":
         options.debug = true;
         break;
-      case '--dry-run':
+      case "--dry-run":
         options.dryRun = true;
         break;
-      case '--template-url':
+      case "--template-url":
         options.templateUrl = args[++i];
         break;
-      case '--exclude':
-        options.excludePaths = args[++i]?.split(',') || [];
+      case "--exclude":
+        options.excludePaths = args[++i]?.split(",") || [];
         break;
-      case '--skip-install':
+      case "--skip-install":
         options.skipInstall = true;
         break;
-      case '--remote-name':
+      case "--remote-name":
         options.remoteName = args[++i];
         break;
-      case '--max-retries':
-        options.maxPatchRetries = parseInt(args[++i]) || 3;
+      case "--max-retries":
+        options.maxPatchRetries = parseInt(args[++i], 10) || 3;
         break;
-      case '--skip-clean-check':
+      case "--skip-clean-check":
         options.skipCleanCheck = true;
         break;
-      case '--help':
-      case '-h':
+      case "--help":
+      case "-h":
         options.help = true;
         break;
     }
   }
-  
+
   return options;
 };
 
@@ -80,5 +80,4 @@ if (options.help) {
   process.exit(0);
 }
 
-const { help, ...upgradeOptions } = options;
-upgradeTemplate(undefined, upgradeOptions);
+upgradeTemplate(undefined, options);
