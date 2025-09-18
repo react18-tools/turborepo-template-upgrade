@@ -95,7 +95,14 @@ const createAndApplyPatch = async (
   log(`Running: ${diffCmd}`);
   const { stdout: patch } = await execFileAsync(
     "git",
-    ["diff", baseCommit, `${remoteName}/main`, "--", ...exclusions, "."],
+    [
+      "diff",
+      sanitizedBaseCommit,
+      `${sanitizedRemoteName}/main`,
+      "--",
+      ...exclusions,
+      ".",
+    ],
     { encoding: "utf8" },
   );
   await writeFile(".template.patch", patch);
@@ -119,7 +126,7 @@ const createAndApplyPatch = async (
       const filePath = line.split(":")[1]?.trim();
       if (filePath) {
         exclusions.push(`:!${filePath}`);
-        log(`Added to exclusions: ${filePath}`);
+        log(`Added to exclusions: ${filePath.replace(/[\r\n]/g, "")}`);
       }
     });
     errorLogs.push("Applied patch with errors: ");
@@ -205,9 +212,11 @@ export const upgradeTemplate = async (
   // Ensure template remote exists
   try {
     await execFileAsync("git", ["remote", "add", remoteName, templateUrl]);
-    log(`Added ${remoteName} remote: ${templateUrl}`);
+    log(
+      `Added ${remoteName.replace(/[\r\n]/g, "")} remote: ${templateUrl.replace(/[\r\n]/g, "")}`,
+    );
   } catch {
-    log(`${remoteName} remote already exists`);
+    log(`${remoteName.replace(/[\r\n]/g, "")} remote already exists`);
   }
 
   // Delete backup dir
@@ -217,7 +226,7 @@ export const upgradeTemplate = async (
 
   try {
     await execFileAsync("git", ["fetch", remoteName]);
-    log(`Fetched latest changes from ${remoteName}`);
+    log(`Fetched latest changes from ${remoteName.replace(/[\r\n]/g, "")}`);
 
     // Determine last template commit
     const baseCommit =
@@ -226,7 +235,7 @@ export const upgradeTemplate = async (
       (await getBaseCommit());
 
     if (options.from) {
-      log(`Using specified reference: ${options.from}`);
+      log(`Using specified reference: ${options.from.replace(/[\r\n]/g, "")}`);
     }
 
     // Build exclusion list
@@ -253,7 +262,9 @@ export const upgradeTemplate = async (
 
     missingDirs.forEach((dir) => {
       exclusions.push(`:!${dir}`);
-      log(`Added missing path to exclusions: ${dir}`);
+      log(
+        `Added missing path to exclusions: ${dir?.replace(/[\r\n]/g, "") || ""}`,
+      );
     });
 
     const missingTestFiles = await Promise.all(
