@@ -3,7 +3,7 @@ import { describe, test, vi, beforeEach } from "vitest";
 // Mock the upgradeTemplate function
 const mockUpgradeTemplate = vi.fn();
 vi.mock(".", () => ({
-  upgradeTemplate: mockUpgradeTemplate
+  upgradeTemplate: mockUpgradeTemplate,
 }));
 
 interface ParsedOptions {
@@ -24,36 +24,36 @@ const parseArgs = (args: string[]): ParsedOptions => {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     switch (arg) {
-      case '--debug':
-      case '-d':
+      case "--debug":
+      case "-d":
         options.debug = true;
         break;
-      case '--dry-run':
+      case "--dry-run":
         options.dryRun = true;
         break;
-      case '--template-url':
+      case "--template-url":
         if (i + 1 < args.length) options.templateUrl = args[++i];
         break;
-      case '--exclude':
-        if (i + 1 < args.length) options.excludePaths = args[++i]?.split(',') || [];
+      case "--exclude":
+        if (i + 1 < args.length) options.excludePaths = args[++i]?.split(",") || [];
         break;
-      case '--skip-install':
+      case "--skip-install":
         options.skipInstall = true;
         break;
-      case '--remote-name':
+      case "--remote-name":
         if (i + 1 < args.length) options.remoteName = args[++i];
         break;
-      case '--max-retries':
+      case "--max-retries":
         if (i + 1 < args.length) {
           const value = parseInt(args[++i]);
           if (!isNaN(value) && value > 0) options.maxPatchRetries = value;
         }
         break;
-      case '--skip-clean-check':
+      case "--skip-clean-check":
         options.skipCleanCheck = true;
         break;
-      case '--help':
-      case '-h':
+      case "--help":
+      case "-h":
         options.help = true;
         break;
     }
@@ -81,7 +81,9 @@ describe("CLI argument parsing", () => {
   });
 
   test("should parse exclude option", ({ expect }) => {
-    expect(parseArgs(["--exclude", "docs,examples"])).toEqual({ excludePaths: ["docs", "examples"] });
+    expect(parseArgs(["--exclude", "docs,examples"])).toEqual({
+      excludePaths: ["docs", "examples"],
+    });
   });
 
   test("should parse skip-install flag", ({ expect }) => {
@@ -106,7 +108,7 @@ describe("CLI argument parsing", () => {
       debug: true,
       dryRun: true,
       excludePaths: ["docs", "examples"],
-      skipInstall: true
+      skipInstall: true,
     });
   });
 

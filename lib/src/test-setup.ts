@@ -7,7 +7,7 @@ const CLEANUP_FILES = [
   ".template.patch",
   ".error.log",
   ".turborepo-template.config.json",
-  ".tt-upgrade.config.json"
+  ".tt-upgrade.config.json",
 ];
 
 // Global cleanup after all tests

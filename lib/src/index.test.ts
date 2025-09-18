@@ -9,13 +9,13 @@ import { writeFileSync, unlinkSync, existsSync, readFileSync } from "fs";
 // Mock child_process to prevent actual git operations in tests
 vi.mock("child_process", () => ({
   execSync: vi.fn(() => "mock-output"),
-  execFileSync: vi.fn(() => "mock-output")
+  execFileSync: vi.fn(() => "mock-output"),
 }));
 
 vi.mock("./utils", () => ({
   cdToRepoRoot: vi.fn(() => process.cwd()),
   getBaseCommit: vi.fn(() => "abc123"),
-  resolvePackageJSONConflicts: vi.fn()
+  resolvePackageJSONConflicts: vi.fn(),
 }));
 
 describe("upgrade", () => {
@@ -28,16 +28,16 @@ describe("upgrade", () => {
     const mockExecFileSync = vi.mocked(execFileSync);
     mockExecSync.mockReturnValue("mock-commit-hash");
     mockExecFileSync.mockReturnValue("mock-commit-hash");
-    
+
     await upgradeTemplate();
     expect(mockExecSync).toHaveBeenCalled();
   });
 
   test("should support debug mode", async ({ expect }) => {
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-    
+
     await upgradeTemplate(undefined, { debug: true });
-    
+
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining("[DEBUG]"));
     consoleSpy.mockRestore();
   });
@@ -46,9 +46,9 @@ describe("upgrade", () => {
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     const mockExecSync = vi.mocked(execSync);
     mockExecSync.mockReturnValue("");
-    
+
     await upgradeTemplate(undefined, { dryRun: true });
-    
+
     expect(consoleSpy).toHaveBeenCalledWith("🔍 Dry run mode - no changes will be applied");
     consoleSpy.mockRestore();
   });
@@ -56,26 +56,20 @@ describe("upgrade", () => {
   test("should support custom template URL", async ({ expect }) => {
     const mockExecFileSync = vi.mocked(execFileSync);
     const customUrl = "https://github.com/custom/template";
-    
+
     await upgradeTemplate(undefined, { templateUrl: customUrl });
-    
-    expect(mockExecFileSync).toHaveBeenCalledWith(
-      "git",
-      ["remote", "add", "template", customUrl]
-    );
+
+    expect(mockExecFileSync).toHaveBeenCalledWith("git", ["remote", "add", "template", customUrl]);
   });
 
   test("should support skip install option", async ({ expect }) => {
     const mockExecSync = vi.mocked(execSync);
     mockExecSync.mockReturnValue("mock-commit-hash");
-    
+
     await upgradeTemplate(undefined, { skipInstall: true });
-    
+
     // Should not call pnpm i when skipInstall is true
-    expect(mockExecSync).not.toHaveBeenCalledWith(
-      "pnpm i",
-      expect.any(Object)
-    );
+    expect(mockExecSync).not.toHaveBeenCalledWith("pnpm i", expect.any(Object));
   });
 
   test(
@@ -83,7 +77,7 @@ describe("upgrade", () => {
     async ({ expect }) => {
       // Restore original execSync for integration test
       vi.restoreAllMocks();
-      
+
       await upgradeTemplate(lstCommit.trim());
       getBaseCommit();
       execSync("git reset --hard HEAD");
@@ -97,7 +91,7 @@ describe("upgrade", () => {
 
 describe("config", () => {
   const configPath = ".tt-upgrade.config.json";
-  
+
   beforeEach(() => {
     // Clean up any existing config file
     if (existsSync(configPath)) {
@@ -114,33 +108,33 @@ describe("config", () => {
     const testConfig = {
       debug: true,
       skipInstall: true,
-      excludePaths: ["docs", "examples"]
+      excludePaths: ["docs", "examples"],
     };
-    
+
     writeFileSync(configPath, JSON.stringify(testConfig));
-    
+
     const config = loadConfig(process.cwd());
     expect(config).toEqual(testConfig);
-    
+
     unlinkSync(configPath);
   });
 
   test("should merge configs correctly", ({ expect }) => {
     const fileConfig = {
       debug: false,
-      excludePaths: ["docs"]
+      excludePaths: ["docs"],
     };
-    
+
     const cliConfig = {
       debug: true,
-      excludePaths: ["examples"]
+      excludePaths: ["examples"],
     };
-    
+
     const merged = mergeConfig(fileConfig, cliConfig);
-    
+
     expect(merged).toEqual({
       debug: true,
-      excludePaths: ["docs", "examples"]
+      excludePaths: ["docs", "examples"],
     });
   });
 });

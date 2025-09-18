@@ -50,7 +50,7 @@ const createAndApplyPatch = (
   log: (msg: string) => void,
   remoteName = "template",
   maxRetries = 3,
-  patchRecurseCount = 0
+  patchRecurseCount = 0,
 ) => {
   if (patchRecurseCount > maxRetries) {
     log(`Max patch recursion reached (${maxRetries}), stopping`);
@@ -62,13 +62,13 @@ const createAndApplyPatch = (
   const sanitizedRemoteName = remoteName.replace(/[^a-zA-Z0-9_-]/g, "");
 
   const diffCmd = `git diff ${sanitizedBaseCommit} ${sanitizedRemoteName}/main -- ${exclusions.join(
-    " "
+    " ",
   )} .`;
   log(`Running: ${diffCmd}`);
   const patch = execFileSync(
     "git",
     ["diff", baseCommit, `${remoteName}/main`, "--", ...exclusions, "."],
-    { encoding: "utf8" }
+    { encoding: "utf8" },
   );
   writeFileSync(".template.patch", patch);
   log(`Patch written to .template.patch (${patch.length} chars)`);
@@ -102,7 +102,7 @@ const createAndApplyPatch = (
         log,
         remoteName,
         maxRetries,
-        patchRecurseCount + 1
+        patchRecurseCount + 1,
       );
   }
 };
@@ -125,7 +125,7 @@ export type { UpgradeConfig as UpgradeOptions } from "./config";
  */
 export const upgradeTemplate = async (
   lastTemplateRepoCommit?: string,
-  cliOptions: UpgradeConfig = {}
+  cliOptions: UpgradeConfig = {},
 ) => {
   const cwd = cdToRepoRoot();
   const fileConfig = loadConfig(cwd);
@@ -217,7 +217,7 @@ export const upgradeTemplate = async (
       const patch = execFileSync(
         "git",
         ["diff", baseCommit, `${remoteName}/main`, "--", ...exclusions, "."],
-        { encoding: "utf8" }
+        { encoding: "utf8" },
       );
       console.log("📋 Patch preview:");
       console.log(patch || "No changes to apply");
