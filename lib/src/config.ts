@@ -20,6 +20,8 @@ export interface UpgradeConfig {
   backupDir?: string;
   /** Skip git tree clean check */
   skipCleanCheck?: boolean;
+  /** Specific commit hash, tag, or branch to upgrade from */
+  from?: string;
 }
 
 /**

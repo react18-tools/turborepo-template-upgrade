@@ -221,7 +221,13 @@ export const upgradeTemplate = async (
 
     // Determine last template commit
     const baseCommit =
-      lastTemplateRepoCommit?.trim() || (await getBaseCommit());
+      lastTemplateRepoCommit?.trim() ||
+      options.from?.trim() ||
+      (await getBaseCommit());
+
+    if (options.from) {
+      log(`Using specified reference: ${options.from}`);
+    }
 
     // Build exclusion list
     const exclusions = [...DEFAULT_EXCLUSIONS, ...excludePaths].map(

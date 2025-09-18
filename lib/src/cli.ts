@@ -37,6 +37,9 @@ const parseArgs = (args: string[]): CliOptions => {
       case "--skip-clean-check":
         options.skipCleanCheck = true;
         break;
+      case "--from":
+        options.from = args[++i];
+        break;
       case "--help":
       case "-h":
         options.help = true;
@@ -60,6 +63,7 @@ Options:
   --remote-name <name>    Custom remote name for template (default: template)
   --max-retries <num>     Maximum patch retry attempts (default: 3)
   --skip-clean-check      Skip git tree clean check
+  --from <ref>            Specific commit hash, tag, or branch to upgrade from
   -h, --help              Show this help message
 
 Configuration:
@@ -80,4 +84,4 @@ if (options.help) {
   process.exit(0);
 }
 
-upgradeTemplate(undefined, options);
+upgradeTemplate(options.from, options);
