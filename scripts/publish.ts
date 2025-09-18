@@ -60,6 +60,10 @@ if (isPatch) {
   }
 }
 
+try {
+  execSync(`git checkout ${BRANCH} && git pull`);
+} catch {}
+
 const { visibility } = JSON.parse(
   execSync("gh repo view --json visibility").toString(),
 );
