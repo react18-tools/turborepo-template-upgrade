@@ -18,8 +18,17 @@ const errorLogs: unknown[] = [];
 
 // Helper functions for sanitization
 const sanitizeGitRef = (ref: string) => ref.replace(/[^a-zA-Z0-9]/g, "");
-const sanitizeRemoteName = (name: string) =>
-  name.replace(/[^a-zA-Z0-9_-]/g, "");
+const sanitizeRemoteName = (name: string) => {
+  // Only allow alphanumeric, underscore, hyphen, *not* starting with dash
+  const cleaned = name.replace(/[^a-zA-Z0-9_-]/g, "");
+  // Must start with alphanumeric or underscore
+  if (!cleaned || !/^[a-zA-Z0-9_]/.test(cleaned) || cleaned.startsWith("-")) {
+    throw new Error(
+      `Invalid remote name: "${name}". Remote names may only contain letters, numbers, underscore, and hyphen, and cannot start with '-'.`,
+    );
+  }
+  return cleaned;
+};
 const sanitizeLogInput = (input: string) => input.replace(/[\r\n]/g, "");
 
 const DEFAULT_EXCLUSIONS = [
