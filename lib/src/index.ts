@@ -16,6 +16,12 @@ import {
 
 const errorLogs: unknown[] = [];
 
+// Helper functions for sanitization
+const sanitizeGitRef = (ref: string) => ref.replace(/[^a-zA-Z0-9]/g, "");
+const sanitizeRemoteName = (name: string) =>
+  name.replace(/[^a-zA-Z0-9_-]/g, "");
+const sanitizeLogInput = (input: string) => input.replace(/[\r\n]/g, "");
+
 const DEFAULT_EXCLUSIONS = [
   ".tkb",
   "CHANGELOG.md",
@@ -86,8 +92,8 @@ const createAndApplyPatch = async (
   }
 
   // Sanitize inputs to prevent command injection
-  const sanitizedBaseCommit = baseCommit.replace(/[^a-zA-Z0-9]/g, "");
-  const sanitizedRemoteName = remoteName.replace(/[^a-zA-Z0-9_-]/g, "");
+  const sanitizedBaseCommit = sanitizeGitRef(baseCommit);
+  const sanitizedRemoteName = sanitizeRemoteName(remoteName);
 
   const diffCmd = `git diff ${sanitizedBaseCommit} ${sanitizedRemoteName}/main -- ${exclusions.join(
     " ",
@@ -126,7 +132,7 @@ const createAndApplyPatch = async (
       const filePath = line.split(":")[1]?.trim();
       if (filePath) {
         exclusions.push(`:!${filePath}`);
-        log(`Added to exclusions: ${filePath.replace(/[\r\n]/g, "")}`);
+        log(`Added to exclusions: ${sanitizeLogInput(filePath)}`);
       }
     });
     errorLogs.push("Applied patch with errors: ");
@@ -213,10 +219,10 @@ export const upgradeTemplate = async (
   try {
     await execFileAsync("git", ["remote", "add", remoteName, templateUrl]);
     log(
-      `Added ${remoteName.replace(/[\r\n]/g, "")} remote: ${templateUrl.replace(/[\r\n]/g, "")}`,
+      `Added ${sanitizeLogInput(remoteName)} remote: ${sanitizeLogInput(templateUrl)}`,
     );
   } catch {
-    log(`${remoteName.replace(/[\r\n]/g, "")} remote already exists`);
+    log(`${sanitizeLogInput(remoteName)} remote already exists`);
   }
 
   // Delete backup dir
@@ -226,7 +232,7 @@ export const upgradeTemplate = async (
 
   try {
     await execFileAsync("git", ["fetch", remoteName]);
-    log(`Fetched latest changes from ${remoteName.replace(/[\r\n]/g, "")}`);
+    log(`Fetched latest changes from ${sanitizeLogInput(remoteName)}`);
 
     // Determine last template commit
     const baseCommit =
@@ -235,7 +241,7 @@ export const upgradeTemplate = async (
       (await getBaseCommit());
 
     if (options.from) {
-      log(`Using specified reference: ${options.from.replace(/[\r\n]/g, "")}`);
+      log(`Using specified reference: ${sanitizeLogInput(options.from)}`);
     }
 
     // Build exclusion list
@@ -262,9 +268,7 @@ export const upgradeTemplate = async (
 
     missingDirs.forEach((dir) => {
       exclusions.push(`:!${dir}`);
-      log(
-        `Added missing path to exclusions: ${dir?.replace(/[\r\n]/g, "") || ""}`,
-      );
+      log(`Added missing path to exclusions: ${sanitizeLogInput(dir || "")}`);
     });
 
     const missingTestFiles = await Promise.all(
@@ -294,10 +298,19 @@ export const upgradeTemplate = async (
     log(`Generating patch from ${baseCommit} to template/main`);
     log(`Total exclusions: ${exclusions.length}`);
 
+    const sanitizedBaseCommit = sanitizeGitRef(baseCommit);
+    const sanitizedRemoteName = sanitizeRemoteName(remoteName);
     if (dryRun) {
       const { stdout: patch } = await execFileAsync(
         "git",
-        ["diff", baseCommit, `${remoteName}/main`, "--", ...exclusions, "."],
+        [
+          "diff",
+          sanitizedBaseCommit,
+          `${sanitizedRemoteName}/main`,
+          "--",
+          ...exclusions,
+          ".",
+        ],
         { encoding: "utf8" },
       );
       console.log("📋 Patch preview:");
@@ -315,7 +328,7 @@ export const upgradeTemplate = async (
 
     const { stdout: templateLatestCommit } = await execFileAsync(
       "git",
-      ["rev-parse", `${remoteName}/main`],
+      ["rev-parse", `${sanitizedRemoteName}/main`],
       { encoding: "utf8" },
     );
 
