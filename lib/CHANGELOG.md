@@ -1,10 +1,21 @@
 # turborepo-template-upgrade
 
+## 0.7.0
+
+### Minor Changes
+
+- ea1c2d7: Add support for --from option to specify commit hash, tag, or branch name for upgrade base
+
+### Patch Changes
+
+- fc31e70: Refactor core upgrade logic to use async/await pattern, replacing synchronous file operations and command execution with asynchronous alternatives for better performance and error handling
+
 ## 0.6.2
 
 ### Patch Changes
 
 - ea8cca6: Fix code formatting and improve package.json conflict resolution
+
   - Fix trailing commas and code formatting issues
   - Support both .js and .ts rebrand scripts detection
   - Change default merge strategy to "theirs" for better template updates

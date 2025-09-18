@@ -54,6 +54,11 @@ npx turborepo-template-upgrade --skip-install
 
 # Exclude specific paths
 npx turborepo-template-upgrade --exclude "docs,examples"
+
+# Upgrade from specific commit, tag, or branch
+npx turborepo-template-upgrade --from v1.2.3
+npx turborepo-template-upgrade --from abc123def
+npx turborepo-template-upgrade --from feature-branch
 ```
 
 **Available Options:**
@@ -66,6 +71,7 @@ npx turborepo-template-upgrade --exclude "docs,examples"
 - `--remote-name <name>` - Custom git remote name
 - `--max-retries <num>` - Maximum patch retry attempts
 - `--skip-clean-check` - Skip git tree clean validation
+- `--from <ref>` - Specific commit hash, tag, or branch to upgrade from
 - `--help` / `-h` - Show help message
 
 This will:
@@ -80,6 +86,27 @@ If there are remaining conflicts, you’ll see them in `.template.patch`.
 
 ---
 
+## ⚠️ Important Migration Notice
+
+**Biome Migration**: The turborepo-template has migrated from ESLint + Prettier to Biome for linting and formatting. If you prefer to continue using ESLint + Prettier, configure your upgrade to use the legacy branch:
+
+> See discussion here: https://github.com/react18-tools/turborepo-template/discussions/69
+
+```bash
+npx turborepo-template-upgrade --template-url https://github.com/react18-tools/turborepo-template --from legacy/eslint-prettier
+```
+
+Or add to your `.tt-upgrade.config.json`:
+
+```json
+{
+  "templateUrl": "https://github.com/react18-tools/turborepo-template",
+  "from": "legacy/eslint-prettier"
+}
+```
+
+---
+
 ## 🔧 Configuration
 
 Create `.tt-upgrade.config.json` in your repo root for persistent settings:
@@ -91,7 +118,8 @@ Create `.tt-upgrade.config.json` in your repo root for persistent settings:
   "excludePaths": ["docs", "examples"],
   "templateUrl": "https://github.com/custom/template",
   "remoteName": "upstream",
-  "maxPatchRetries": 5
+  "maxPatchRetries": 5,
+  "from": "v1.2.3"
 }
 ```
 
@@ -141,6 +169,12 @@ npx turborepo-template-upgrade
 ```bash
 # Skip installation and exclude docs
 npx turborepo-template-upgrade --skip-install --exclude "docs,examples"
+
+# Upgrade from specific version
+npx turborepo-template-upgrade --from v2.1.0
+
+# Use legacy ESLint + Prettier setup
+npx turborepo-template-upgrade --from legacy/eslint-prettier
 ```
 
 ---
