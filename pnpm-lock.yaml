@@ -2148,6 +2148,30 @@ packages:
       yaml:
         optional: true
 
+  git-json-resolver@1.3.7:
+    resolution: {integrity: sha512-ml8lECMqvRtcnQc5bBMY/0ltydMlKrW4VIKJe0Nc/Kh9nCjPD+8VVBobaMrGIPiZuHQnKfyPu86qQ9LFdqa8ZA==}
+    hasBin: true
+    peerDependencies:
+      fast-xml-parser: ^5.2.5
+      json5: ^2.2.3
+      micromatch: ^4.0.8
+      picomatch: ^4.0.3
+      smol-toml: ^1.4.2
+      yaml: ^2.8.1
+    peerDependenciesMeta:
+      fast-xml-parser:
+        optional: true
+      json5:
+        optional: true
+      micromatch:
+        optional: true
+      picomatch:
+        optional: true
+      smol-toml:
+        optional: true
+      yaml:
+        optional: true
+
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
@@ -5723,7 +5747,18 @@ snapshots:
     dependencies:
       git-json-resolver: 1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
 
+  git-json-resolver-semver@1.0.0(git-json-resolver@1.3.7(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)):
+    dependencies:
+      git-json-resolver: 1.3.7(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
+
   git-json-resolver@1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1):
+    optionalDependencies:
+      json5: 2.2.3
+      micromatch: 4.0.8
+      picomatch: 4.0.3
+      yaml: 2.8.1
+
+  git-json-resolver@1.3.7(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1):
     optionalDependencies:
       json5: 2.2.3
       micromatch: 4.0.8
@@ -7398,8 +7433,8 @@ snapshots:
 
   turborepo-template-upgrade@0.6.2(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1):
     dependencies:
-      git-json-resolver: 1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
-      git-json-resolver-semver: 1.0.0(git-json-resolver@1.3.6(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1))
+      git-json-resolver: 1.3.7(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1)
+      git-json-resolver-semver: 1.0.0(git-json-resolver@1.3.7(json5@2.2.3)(micromatch@4.0.8)(picomatch@4.0.3)(yaml@2.8.1))
     transitivePeerDependencies:
       - fast-xml-parser
       - json5
