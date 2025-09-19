@@ -20,7 +20,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BRANCH = process.env.BRANCH;
 const DEFAULT_BRANCH = process.env.DEFAULT_BRANCH;
 
-if (!BRANCH || DEFAULT_BRANCH) {
+if (!BRANCH || !DEFAULT_BRANCH) {
   exit(1);
 }
 
