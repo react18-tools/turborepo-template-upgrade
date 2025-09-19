@@ -144,7 +144,7 @@ try {
 } catch {}
 
 // Publish canonical packages
-execSync("tsx scripts/publish-canonical.ts");
-
-execSync("tsx ./scripts/lite.ts");
-execSync(publishCmd + reTag.replace("@", "-lite@"));
+execSync("tsx scripts/publish-canonical.ts", {
+  env: { ...process.env, NODE_AUTH_TOKEN: process.env.NODE_AUTH_TOKEN },
+  stdio: "inherit",
+});

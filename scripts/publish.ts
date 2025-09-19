@@ -90,9 +90,8 @@ try {
   }
 }
 
-try {
-  // Publish canonical packages
-  execSync("tsx scripts/publish-canonical.ts");
-} catch {
-  console.error("Failed to publish canonical packages");
-}
+// Publish canonical packages
+execSync("tsx scripts/publish-canonical.ts", {
+  env: { ...process.env, NODE_AUTH_TOKEN: process.env.NODE_AUTH_TOKEN },
+  stdio: "inherit",
+});
