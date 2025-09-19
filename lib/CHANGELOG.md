@@ -1,5 +1,11 @@
 # turborepo-template-upgrade
 
+## 0.7.1
+
+### Patch Changes
+
+- 89efabb: Add newline at the end of the files to keep the linter and formetter happy
+
 ## 0.7.0
 
 ### Minor Changes
