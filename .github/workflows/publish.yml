@@ -31,6 +31,7 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
       - name: Setup Git
         run: |
           git config --global user.name "mayank1513"
