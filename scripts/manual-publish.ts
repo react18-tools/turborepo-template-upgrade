@@ -147,4 +147,5 @@ try {
 execSync("pnpm tsx scripts/publish-canonical.ts", {
   env: { ...process.env, NODE_AUTH_TOKEN: process.env.NODE_AUTH_TOKEN },
   stdio: "inherit",
+  encoding: "utf8",
 });
