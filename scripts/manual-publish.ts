@@ -132,18 +132,19 @@ const reTag = isLatest
 const publishCmd = `cd lib && pnpm build && npm publish ${provenance} --access public${
   tag && ` --tag ${tag}`
 }`;
-execSync(publishCmd + reTag, { encoding: "utf8", stdio: "inherit" });
-
-/** Create GitHub release */
-execSync(
-  `gh release create ${NEW_VERSION} --generate-notes${
-    isLatestRelease ? " --latest" : ""
-  } -n "$(sed '1,/^## /d;/^## /,$d' lib/CHANGELOG.md)" --title "Release v${NEW_VERSION}"`,
-);
-
 try {
-  // Publish canonical packages
-  execSync("tsx scripts/publish-canonical.ts");
-} catch {
-  console.error("Failed to publish canonical packages");
-}
+  execSync(publishCmd + reTag);
+
+  /** Create GitHub release */
+  execSync(
+    `gh release create ${NEW_VERSION} --generate-notes${
+      isLatestRelease ? " --latest" : ""
+    } -n "$(sed '1,/^## /d;/^## /,$d' lib/CHANGELOG.md)" --title "Release v${NEW_VERSION}"`,
+  );
+} catch {}
+
+// Publish canonical packages
+execSync("tsx scripts/publish-canonical.ts");
+
+execSync("tsx ./scripts/lite.ts");
+execSync(publishCmd + reTag.replace("@", "-lite@"));
