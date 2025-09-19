@@ -70,7 +70,7 @@ const { visibility } = JSON.parse(
 const provenance = visibility.toLowerCase() === "public" ? "--provenance" : "";
 
 /** Create release */
-execSync(`cd lib && pnpm build && pnpm publish ${provenance} --access public`, {
+execSync(`cd lib && pnpm build && npm publish ${provenance} --access public`, {
   encoding: "utf8",
   stdio: "inherit",
 });

@@ -129,10 +129,10 @@ const reTag = isLatest
   ? ""
   : ` && npm dist-tag add ${name}@${LATEST_VERSION} latest`;
 /** Create release */
-const publishCmd = `cd lib && pnpm build && pnpm publish ${provenance} --access public${
+const publishCmd = `cd lib && pnpm build && npm publish ${provenance} --access public${
   tag && ` --tag ${tag}`
 }`;
-execSync(publishCmd + reTag);
+execSync(publishCmd + reTag, { encoding: "utf8", stdio: "inherit" });
 
 /** Create GitHub release */
 execSync(
