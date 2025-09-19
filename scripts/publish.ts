@@ -91,7 +91,4 @@ try {
 }
 
 // Publish canonical packages
-execSync("tsx scripts/publish-canonical.ts", {
-  env: { ...process.env, NODE_AUTH_TOKEN: process.env.NODE_AUTH_TOKEN },
-  stdio: "inherit",
-});
+execSync("tsx scripts/publish-canonical.ts");

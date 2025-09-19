@@ -3,7 +3,7 @@ import { execSync } from "node:child_process";
 // Set up npm authentication
 if (process.env.NODE_AUTH_TOKEN) {
   execSync(
-    `cd lib && npm config set //registry.npmjs.org/:_authToken ${process.env.NODE_AUTH_TOKEN}`,
+    `npm config set //registry.npmjs.org/:_authToken ${process.env.NODE_AUTH_TOKEN}`,
   );
 }
 
