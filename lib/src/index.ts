@@ -346,8 +346,14 @@ export const upgradeTemplate = async (
 
     if (!dryRun && !skipInstall) {
       console.log("Reinstalling dependencies...");
-      await execAsync("pnpm i", { encoding: "utf8" });
-      log("Dependencies reinstalled");
+      try {
+        await execAsync("pnpm i", { encoding: "utf8" });
+        log("Dependencies reinstalled");
+      } catch {
+        console.log(
+          "Failed to reinstall dependencies, please check the logs and try again.",
+        );
+      }
     } else if (skipInstall) {
       log("Skipping dependency installation");
     }
