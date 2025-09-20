@@ -1,5 +1,12 @@
 # turborepo-template-upgrade
 
+## 0.7.2
+
+### Patch Changes
+
+- 0143867: Add cleanup prompt for logs and merge-backups after upgrade completion
+- 78708b4: fix: wrap pnpm i in try catch to avoid skipping removal of .tuborepo-template.lst update steps in workflows.
+
 ## 0.7.1
 
 ### Patch Changes
