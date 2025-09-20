@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 import { type UpgradeOptions, upgradeTemplate } from ".";
+import { createDefaultConfig } from "./config";
+import { cdToRepoRoot } from "./utils";
 
 interface CliOptions extends UpgradeOptions {
   help?: boolean;
+  init?: boolean;
 }
 
 const parseArgs = (args: string[]): CliOptions => {
@@ -40,6 +43,22 @@ const parseArgs = (args: string[]): CliOptions => {
       case "--from":
         options.from = args[++i];
         break;
+      case "--last-commit-file":
+      case "-l":
+        options.lastCommitFile = args[++i];
+        break;
+      case "--init":
+      case "-i":
+        options.init = true;
+        // Check if next arg is a filename (not starting with --)
+        if (args[i + 1] && !args[i + 1].startsWith("--")) {
+          options.config = args[++i];
+        }
+        break;
+      case "--config":
+      case "-c":
+        options.config = args[++i];
+        break;
       case "--help":
       case "-h":
         options.help = true;
@@ -64,6 +83,9 @@ Options:
   --max-retries <num>     Maximum patch retry attempts (default: 3)
   --skip-clean-check      Skip git tree clean check
   --from <ref>            Specific commit hash, tag, or branch to upgrade from
+  -l, --last-commit-file <file> Custom file to store last commit hash
+  -i, --init [file]       Create default config file (optionally specify filename)
+  -c, --config <file>     Use custom config file
   -h, --help              Show this help message
 
 Configuration:
@@ -74,14 +96,27 @@ Examples:
   turborepo-template-upgrade --dry-run
   turborepo-template-upgrade --exclude "docs,examples" --skip-install
   turborepo-template-upgrade --template-url https://github.com/custom/template
+  turborepo-template-upgrade --init
+  turborepo-template-upgrade --init my-config.json
+  turborepo-template-upgrade --config my-config.json
 `);
 };
 
-const options = parseArgs(process.argv.slice(2));
+const main = async () => {
+  const options = parseArgs(process.argv.slice(2));
 
-if (options.help) {
-  showHelp();
-  process.exit(0);
-}
+  if (options.help) {
+    showHelp();
+    process.exit(0);
+  }
 
-upgradeTemplate(options.from, options);
+  if (options.init) {
+    const cwd = await cdToRepoRoot();
+    await createDefaultConfig(cwd, options.config);
+    process.exit(0);
+  }
+
+  upgradeTemplate(options.from, options);
+};
+
+main().catch(console.error);

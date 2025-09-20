@@ -34,11 +34,10 @@ export const cdToRepoRoot = async () => {
 };
 
 const DEFAULT_LAST_TURBO_COMMIT = "159692443c7a196d86c2612f752ae1d0786b004b";
-const LAST_COMMIT_FILE = ".turborepo-template.lst";
-export const getBaseCommit = async () => {
+export const getBaseCommit = async (lastCommitFile: string) => {
   // 1. If already tracked, prefer that
   try {
-    const content = await readFile(LAST_COMMIT_FILE, "utf8");
+    const content = await readFile(lastCommitFile, "utf8");
     return content.trim();
   } catch {}
 

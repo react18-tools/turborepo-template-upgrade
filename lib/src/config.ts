@@ -1,4 +1,4 @@
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 export interface UpgradeConfig {
@@ -22,13 +22,20 @@ export interface UpgradeConfig {
   skipCleanCheck?: boolean;
   /** Specific commit hash, tag, or branch to upgrade from */
   from?: string;
+  /** Custom file to store/load last commit hash */
+  lastCommitFile?: string;
+  /** Custom config file path */
+  config?: string;
 }
 
 /**
- * Load configuration from .tt-upgrade.config.json if it exists
+ * Load configuration from specified config file or .tt-upgrade.config.json if it exists
  */
-export const loadConfig = async (cwd: string): Promise<UpgradeConfig> => {
-  const configPath = resolve(cwd, ".tt-upgrade.config.json");
+export const loadConfig = async (
+  cwd: string,
+  configFile?: string,
+): Promise<UpgradeConfig> => {
+  const configPath = resolve(cwd, configFile || ".tt-upgrade.config.json");
 
   try {
     await access(configPath);
@@ -45,6 +52,33 @@ export const loadConfig = async (cwd: string): Promise<UpgradeConfig> => {
     }
     return {};
   }
+};
+
+export const DEFAULT_CONFIG: Required<UpgradeConfig> = {
+  debug: false,
+  dryRun: false,
+  skipInstall: false,
+  excludePaths: [],
+  templateUrl: "https://github.com/react18-tools/turborepo-template",
+  remoteName: "template",
+  maxPatchRetries: 3,
+  skipCleanCheck: false,
+  lastCommitFile: ".turborepo-template.lst",
+  backupDir: ".merge-backups",
+  from: "",
+  config: ".tt-upgrade.config.json",
+};
+
+/**
+ * Create default config file
+ */
+export const createDefaultConfig = async (
+  cwd: string,
+  configFile?: string,
+): Promise<void> => {
+  const configPath = resolve(cwd, configFile || ".tt-upgrade.config.json");
+  await writeFile(configPath, JSON.stringify(DEFAULT_CONFIG, null, 2));
+  console.log(`✅ Created config file: ${configPath}`);
 };
 
 /**

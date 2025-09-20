@@ -8,7 +8,12 @@ const execFileAsync = promisify(execFile);
 const execAsync = promisify(exec);
 
 import { DEFAULT_BACKUP_DIR } from "git-json-resolver/utils";
-import { loadConfig, mergeConfig, type UpgradeConfig } from "./config";
+import {
+  DEFAULT_CONFIG,
+  loadConfig,
+  mergeConfig,
+  type UpgradeConfig,
+} from "./config";
 import {
   cdToRepoRoot,
   getBaseCommit,
@@ -46,7 +51,6 @@ const DEFAULT_EXCLUSIONS = [
   "scripts/rebrand.config.json",
   "pnpm-lock.yaml",
   ".lst",
-  ".turborepo-template.lst",
   ".vscode/settings.json",
 ];
 
@@ -170,19 +174,20 @@ export const upgradeTemplate = async (
   cliOptions: UpgradeConfig = {},
 ) => {
   const cwd = await cdToRepoRoot();
-  const fileConfig = await loadConfig(cwd);
+  const fileConfig = await loadConfig(cwd, cliOptions.config);
   const options = mergeConfig(fileConfig, cliOptions);
 
   const {
-    debug = false,
-    dryRun = false,
-    templateUrl = "https://github.com/react18-tools/turborepo-template",
-    excludePaths = [],
-    skipInstall = false,
-    remoteName = "template",
-    maxPatchRetries = 3,
-    skipCleanCheck = false,
-  } = options;
+    debug,
+    dryRun,
+    templateUrl,
+    excludePaths,
+    skipInstall,
+    remoteName,
+    maxPatchRetries,
+    skipCleanCheck,
+    lastCommitFile,
+  } = { ...options, ...DEFAULT_CONFIG };
 
   const log = (message: string) =>
     debug && console.log(`🔍 [DEBUG] ${message}`);
@@ -245,7 +250,7 @@ export const upgradeTemplate = async (
     const baseCommit =
       lastTemplateRepoCommit?.trim() ||
       options.from?.trim() ||
-      (await getBaseCommit());
+      (await getBaseCommit(lastCommitFile));
 
     const sanitizedBaseCommit = sanitizeGitRef(baseCommit);
 
@@ -254,9 +259,11 @@ export const upgradeTemplate = async (
     }
 
     // Build exclusion list
-    const exclusions = [...DEFAULT_EXCLUSIONS, ...excludePaths].map(
-      (entry) => `:!${entry}`,
-    );
+    const exclusions = [
+      ...DEFAULT_EXCLUSIONS,
+      lastCommitFile,
+      ...excludePaths,
+    ].map((entry) => `:!${entry}`);
     log(`Base exclusions: ${exclusions.length} items`);
 
     // Check file existence asynchronously
@@ -339,7 +346,7 @@ export const upgradeTemplate = async (
       { encoding: "utf8" },
     );
 
-    await writeFile(".turborepo-template.lst", templateLatestCommit.trim());
+    await writeFile(lastCommitFile, templateLatestCommit.trim());
 
     await resolvePackageJSONConflicts(debug);
 
@@ -360,13 +367,10 @@ export const upgradeTemplate = async (
     }
     // Ensure template last commit is not being updated in workflows
     try {
+      const escapedFile = lastCommitFile.replace(/\./g, "\\.");
       await Promise.all([
-        execAsync(
-          "sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/upgrade.yml",
-        ),
-        execAsync(
-          "sed -i '/\\.turborepo-template\\.lst/d' .github/workflows/docs.yml",
-        ),
+        execAsync(`sed -i '/${escapedFile}/d' .github/workflows/upgrade.yml`),
+        execAsync(`sed -i '/${escapedFile}/d' .github/workflows/docs.yml`),
       ]);
     } catch {
       // ignore if not found

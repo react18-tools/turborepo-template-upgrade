@@ -72,6 +72,9 @@ npx turborepo-template-upgrade --from feature-branch
 - `--max-retries <num>` - Maximum patch retry attempts
 - `--skip-clean-check` - Skip git tree clean validation
 - `--from <ref>` - Specific commit hash, tag, or branch to upgrade from
+- `--last-commit-file <file>` / `-l <file>` - Custom file to store/load last commit hash
+- `--init [file]` / `-i [file]` - Create default config file (optionally specify filename)
+- `--config <file>` / `-c <file>` - Use custom config file
 - `--help` / `-h` - Show help message
 
 This will:
@@ -119,7 +122,8 @@ Create `.tt-upgrade.config.json` in your repo root for persistent settings:
   "templateUrl": "https://github.com/custom/template",
   "remoteName": "upstream",
   "maxPatchRetries": 5,
-  "from": "v1.2.3"
+  "from": "v1.2.3",
+  "lastCommitFile": ".my-template.lst"
 }
 ```
 
@@ -175,6 +179,13 @@ npx turborepo-template-upgrade --from v2.1.0
 
 # Use legacy ESLint + Prettier setup
 npx turborepo-template-upgrade --from legacy/eslint-prettier
+
+# Create config file
+npx turborepo-template-upgrade --init
+npx turborepo-template-upgrade --init my-config.json
+
+# Use custom last commit file
+npx turborepo-template-upgrade --last-commit-file .my-template.lst
 ```
 
 ---
