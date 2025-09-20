@@ -1,6 +1,7 @@
 import { exec, execFile } from "node:child_process";
 import { access, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { createInterface } from "node:readline";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -376,6 +377,26 @@ export const upgradeTemplate = async (
 
   if (errorLogs.length > 0) {
     await writeFile(".error.log", JSON.stringify(errorLogs, null, 2));
-    log(`Error log written with ${errorLogs.length} entries`);
+    console.info(`Error log written with ${errorLogs.length} entries`);
+  }
+
+  // Prompt user to delete logs and merge-backups
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  const answer = await new Promise<string>((resolve) => {
+    rl.question("Delete logs and merge-backups? (y/N): ", resolve);
+  });
+  rl.close();
+
+  if (/y|yes|ok/i.test(answer)) {
+    try {
+      await Promise.all(
+        [".logs", ".logs2", DEFAULT_BACKUP_DIR, ".template.patch"].map((path) =>
+          execAsync(`rm -rf ${path}`),
+        ),
+      );
+      console.log("🗑️ Cleaned up logs and merge-backups");
+    } catch {
+      console.log("⚠️ Failed to clean up some files");
+    }
   }
 };
