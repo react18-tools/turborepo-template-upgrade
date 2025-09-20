@@ -13,11 +13,25 @@ vi.mock("node:child_process", () => ({
   execSync: vi.fn(() => "mock-output"),
 }));
 
+// Mock readline to prevent hanging on user input
+vi.mock("node:readline", () => ({
+  createInterface: vi.fn(() => ({
+    question: vi.fn((_, callback) => callback("n")),
+    close: vi.fn(),
+  })),
+}));
+
 // Mock util
 vi.mock("node:util", () => ({
   promisify: vi.fn(() =>
     vi.fn().mockResolvedValue({ stdout: "mock-output", stderr: "" }),
   ),
+}));
+
+// Mock fs/promises
+vi.mock("node:fs/promises", () => ({
+  access: vi.fn(() => Promise.resolve()),
+  writeFile: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock("./utils", () => ({
