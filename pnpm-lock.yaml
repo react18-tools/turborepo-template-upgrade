@@ -2690,8 +2690,8 @@ packages:
     resolution: {integrity: sha512-XCHRdUw4lf3SKBaJe4EvgqIuWwkPSo9XoeO8GjQW94Bp7TWv9hNhzZjZ+OH9yf1UmLygb7DIT5GSFQiyt16zYg==}
     hasBin: true
 
-  katex@0.16.40:
-    resolution: {integrity: sha512-1DJcK/L05k1Y9Gf7wMcyuqFOL6BiY3vY0CFcAM/LPRN04NALxcl6u7lOWNsp3f/bCHWxigzQl6FbR95XJ4R84Q==}
+  katex@0.16.41:
+    resolution: {integrity: sha512-AdDAqox1xU1h5yGai/uksjxwXby0gbRkwQaWvaE6Esp2wDX/Y/lL6qxQhVg84gzFsriyIv+WVg7bXaVy1PbcJg==}
     hasBin: true
 
   khroma@2.1.0:
@@ -6383,7 +6383,7 @@ snapshots:
     dependencies:
       commander: 8.3.0
 
-  katex@0.16.40:
+  katex@0.16.41:
     dependencies:
       commander: 8.3.0
 
@@ -6674,7 +6674,7 @@ snapshots:
     dependencies:
       '@types/katex': 0.16.8
       devlop: 1.1.0
-      katex: 0.16.40
+      katex: 0.16.41
       micromark-factory-space: 2.0.1
       micromark-util-character: 2.1.1
       micromark-util-symbol: 2.0.1
